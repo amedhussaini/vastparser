@@ -20,17 +20,49 @@ $('#vast-url-button').click(function(){
 		var STR_VERSION = $(data).find('VAST').attr('version');
 		var STR_NUMBER_OF_ADS = $(data).find('VAST').children().length;
 
-		$('#meta-information').append('<li>Version: ' + STR_VERSION + '</li>');
-		$('#meta-information').append('<li># of Ads: ' + STR_NUMBER_OF_ADS + '</li>');
-		
+		$('#general').prepend('<h3>General</h3>');
+		$('#meta-information').append('<li><b>VAST Version:</b> ' + STR_VERSION + '</li>');
+		$('#meta-information').append('<li><b>Number of Ads:</b> ' + STR_NUMBER_OF_ADS + '</li>');
+
+		var NUMBER_OF_ADS = 0;
+
 		$(ADS).each(function(index, element) {
 			
+			NUMBER_OF_ADS++;
+
 			// INLINE LEVEL DATA
 
 			var STR_ADSYSTEM = $(this).find('AdSystem').text();
 			var STR_ADTITLE = $(this).find('AdTitle').text();
 			var STR_DESCRIPTION = $(this).find('Description').text();
 			var IMPRESSION_TRACKERS = $(this).find('Impression');
+			var STUDY_TRACKERS = $(this).find('Survey');
+
+			$('#meta-information').append('<li><b>Ad System:</b> ' + STR_ADSYSTEM + '</li>');
+			$('#meta-information').append('<li><b>Title:</b> ' + STR_ADTITLE + '</li>');
+			$('#meta-information').append('<li><b>Description:</b> ' + STR_DESCRIPTION + '</li>');
+
+			$('#ads').append('<h2>' + STR_ADTITLE + '</h2><ul>' + '<li><b>Ad System: </b>' + STR_ADSYSTEM + '</li>' + '<li><b>Description: </b>' + STR_DESCRIPTION + '</li>' +'</ul>');
+
+			if($(IMPRESSION_TRACKERS).length != 0) {
+
+			$('#ads').append('<h3>Impression Trackers</h3><ul id="imp-ad-' + NUMBER_OF_ADS + '"></ul>');
+			}
+
+			if($(STUDY_TRACKERS).length != 0) {
+			$('#ads').append('<h3>Study Trackers</h3><ul id="study-ad-' + NUMBER_OF_ADS + '"></ul>');
+			}
+
+			$(IMPRESSION_TRACKERS).each(function(index, element){
+
+				$('#imp-ad-' + NUMBER_OF_ADS).append('<li><b>' + $(this).attr('id') +':</b> ' + $(this).text() + '</li>');
+			});
+
+
+			$(STUDY_TRACKERS).each(function(index, element){
+
+				$('#study-ad-' + NUMBER_OF_ADS).append('<li><b>' + $(this).attr('id') +':</b> ' + $(this).text() + '</li>');
+			});
 
 			var INLINE = $(this).find('InLine');
 			
@@ -59,10 +91,12 @@ $('#vast-url-button').click(function(){
 						STR_TYPE = "UNKNOWN!";
 					}
 
-					console.log(STR_TYPE);
 
 					$('#ads').append('<h3>Creative #' + creativeParentNumber + ' (' + STR_TYPE + ')</h3><ul id="ad-' + creativeParentNumber + '"></ul>');
+			
+
 					var trackingEvents = $(this).find('TrackingEvents').children();
+
 					$(trackingEvents).each(function(index, element){
 						
 						//$('#tracking').append('<tr><td>' + creativeParentNumber + '</td><td>' + $(this).attr('event') + '</td><td>' + $(this).text()  + '</td></tr>');
