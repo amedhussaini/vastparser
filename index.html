@@ -24,28 +24,22 @@
   <body>
 
   <br>
-    <div class="container">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-8">
+        <input id="vast-url-input" class="form-control" placeholder="VAST URL" value="http://ad.doubleclick.net/pfadx/N3158.129263.YUME/B8446438.114271426;sz=0x0;ord=$%7Brand%7D;dcmt=text/xml;yume_xml_timeout=10000;yume_ad_timeout=10000">
+      </div>
+      <div class="col-md-4">
+        <input type="button" class="btn btn-default" id="vast-url-button" value="Load"></input>
+      </div>  
+    </div>
+    <div class="col-md-12" id="general">
+      <ul id="meta-information"></ul>
+    </div>
+    <div class="col-md-12" id="ads">
+    </div>
 
-        <div class="form-horizontal">
-          <div class="form-group">
-            <label class="col-sm-2 control-label">VAST TAG</label>
-            <div class="col-sm-8">
-              <input id="vast-url-input" class="form-control" placeholder="VAST URL" value="http://bs.serving-sys.com/BurstingPipe/adServer.bs?cn=is&c=23&pl=VAST&pli=10922894&PluID=0&pos=729&ord=${rand}&cim=1&yume_xml_timeout=10000&yume_ad_timeout=10000">
-            </div>
-            <div class="col-sm-2">
-              <input type="button" class="btn btn-default" id="vast-url-button" value="Load"></input>
-            </div>
-          </div>
-        </div>
-        <div id="general">
-        <ul id="meta-information">          
-        </ul>
-        </div>
-        <div id="ads">
-
-        </div>
-
-    </div><!-- /.container -->
+  </div><!-- /.container -->
 
 
     <!-- Bootstrap core JavaScript
