@@ -41,7 +41,7 @@ $('#vast-url-button').click(function(){
 			var completed_string = '<b>' + type + ', ' + bitrate + 'kbps</b>';
 			if( type == 'video/mp4') {
 
-				if( bitrate == 130 || bitrate == 313 ) {
+				if( bitrate == 130 || bitrate == 150 || (299 < bitrate && bitrate < 385)) {
 
 					$('#meta-information').append('<li><span class="label label-success">Mobile approved</span><ul><li>' + completed_string + '</li></ul></li>');
 				}
