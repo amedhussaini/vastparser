@@ -11,9 +11,9 @@ $('#vast-url-button').click(function(){
 
 		var STR_VERSION = $(data).find('VAST').attr('version');
 		
-		$('#general').prepend('<h3>General</h3>');
-		$('#meta-information').append('<dt><b>VAST Version:</dt><dd>' + STR_VERSION + '</dd>');
-		$('#meta-information').append('<dt><b>Number of Ads:</dt><dd>' + STR_NUMBER_OF_ADS + '</dd>');
+		$('#general').prepend('<h2>General</h2><hr>');
+		$('#meta-information').append('<dt>VAST Version:</dt><dd>' + STR_VERSION + '</dd>');
+		$('#meta-information').append('<dt>Number of Ads:</dt><dd>' + STR_NUMBER_OF_ADS + '</dd>');
 
 		var NUMBER_OF_ADS = 0;
 
@@ -25,7 +25,7 @@ $('#vast-url-button').click(function(){
 			var type = $(this).attr('type');
 			var bitrate = $(this).attr('bitrate');
 			var url = $(this).text();
-			var completed_string = '<b>' + type + ', ' + bitrate + 'kbps</b>';
+			var completed_string = type + ', ' + bitrate + 'kbps';
 			if( type == 'video/mp4') {
 				if( bitrate == 130 || bitrate == 150 || (299 < bitrate && bitrate < 385)) {
 					$('#meta-information').append('<dt><span class="label label-success">Mobile approved</span></dt><dd>' + completed_string + '</dd>');
@@ -48,7 +48,7 @@ $('#vast-url-button').click(function(){
 			var STUDY_TRACKERS = $(this).find('Survey');
 
 
-			$('#ads').append('<h2>' + STR_ADTITLE + '<small> ad #' + NUMBER_OF_ADS + '</small></h2><dl class="dl-horizontal">' + '<dt>Ad System</dt><dd>' + STR_ADSYSTEM + '</dd>' + '<dt>Description</dt><dd>' + STR_DESCRIPTION + '</dd>' +'</dl>');
+			$('#ads').append('<h2>' + STR_ADTITLE + '<small> ad #' + NUMBER_OF_ADS + '</small></h2><hr><dl class="dl-horizontal">' + '<dt>Ad System</dt><dd>' + STR_ADSYSTEM + '</dd>' + '<dt>Description</dt><dd>' + STR_DESCRIPTION + '</dd>' +'</dl>');
 
 
 
@@ -113,7 +113,7 @@ $('#vast-url-button').click(function(){
 
 					// MAIN HEADER 
 
-					$('#ads').append('<h3>Creative #' + creativeParentNumber + ' (Type: ' + STR_TYPE + ', Duration: ' + STR_DURATION + ')</h3>');
+					$('#ads').append('<br><h3>Creative #' + creativeParentNumber + ' (' + STR_TYPE + ', Duration: ' + STR_DURATION + ')</h3>');
 
 					// MEDIA FILES
 
