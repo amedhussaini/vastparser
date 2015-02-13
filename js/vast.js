@@ -66,7 +66,7 @@ $('#vast-url-button').click(function(){
 
 				var impression_description = null;
 
-				if($(this).attr('id') === null) {
+				if($(this).attr('id') == null) {
 					impression_description = 'Impression';
 				} else {
 					impression_description = $(this).attr('id');
