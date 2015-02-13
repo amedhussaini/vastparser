@@ -52,12 +52,13 @@ $('#vast-url-button').click(function(){
 
 
 
-			if($(IMPRESSION_TRACKERS).length != 0) {
-				$('#ads').append('<h3>Impression Trackers</h3><dl class="dl-horizontal" id="imp-ad-' + NUMBER_OF_ADS + '"></dl>');
+			if($(IMPRESSION_TRACKERS).length !== 0) {
+				$('#ads').append('<h3>Impression Trackers (' + $(IMPRESSION_TRACKERS).length + ')</h3><dl class="dl-horizontal" id="imp-ad-' + NUMBER_OF_ADS + '"></dl>');
+			
 			}
 
 
-			if($(STUDY_TRACKERS).length != 0) {
+			if($(STUDY_TRACKERS).length !== 0) {
 				$('#ads').append('<h3>Study Trackers</h3><ul id="study-ad-' + NUMBER_OF_ADS + '"></ul>');
 			}
 
@@ -65,7 +66,7 @@ $('#vast-url-button').click(function(){
 
 				var impression_description = null;
 
-				if($(this).attr('id') == null) {
+				if($(this).attr('id') === null) {
 					impression_description = 'Impression';
 				} else {
 					impression_description = $(this).attr('id');
