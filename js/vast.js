@@ -1,3 +1,5 @@
+window.ads = [];
+
 $('#vast-url-button').click(function(){
 
 	var vastUrlString = $('#vast-url-input').val();
@@ -7,13 +9,18 @@ $('#vast-url-button').click(function(){
 		// TOP LEVEL VAST INFORMATION
 
 		var ADS = $(data).find('VAST').children();
-		var STR_NUMBER_OF_ADS = ADS.length;
 
+
+		var STR_NUMBER_OF_ADS = ADS.length;
 		var STR_VERSION = $(data).find('VAST').attr('version');
 
-		$('#general').prepend('<h2>General</h2><hr>');
-		$('#meta-information').append('<dt>VAST Version:</dt><dd>' + STR_VERSION + '</dd>');
-		$('#meta-information').append('<dt>Number of Ads:</dt><dd>' + STR_NUMBER_OF_ADS + '</dd>');
+		//var template = $('#template').html();
+		//Mustache.parse(template);   // optional, speeds up future uses
+		//var rendered = Mustache.render(template, {
+		//				numberOfAds: STR_NUMBER_OF_ADS,
+		//				vastVersion: STR_VERSION});
+
+		//$('#general').html(rendered);
 
 		var NUMBER_OF_ADS = 0;
 
@@ -37,6 +44,8 @@ $('#vast-url-button').click(function(){
 
 		$(ADS).each(function(index, element) {
 
+			var ad = {};
+
 			NUMBER_OF_ADS++;
 
 			// INLINE LEVEL DATA
@@ -47,6 +56,12 @@ $('#vast-url-button').click(function(){
 			var IMPRESSION_TRACKERS = $(this).find('Impression');
 			var STUDY_TRACKERS = $(this).find('Survey');
 
+			ad.ad_system = STR_ADSYSTEM;
+			ad.ad_title = STR_ADTITLE;
+			ad.description = STR_DESCRIPTION;
+			ad.impression_trackers = [];
+			ad.creatives = [];
+			ad.study_trackers = [];
 
 			$('#ads').append('<h2>' + STR_ADTITLE + '<small> ad #' + NUMBER_OF_ADS + '</small></h2><hr><dl class="dl-horizontal">' + '<dt>Ad System</dt><dd>' + STR_ADSYSTEM + '</dd>' + '<dt>Description</dt><dd>' + STR_DESCRIPTION + '</dd>' +'</dl>');
 
@@ -64,6 +79,8 @@ $('#vast-url-button').click(function(){
 
 			$(IMPRESSION_TRACKERS).each(function(index, element){
 
+				ad.impression_trackers.push({url: $(this).text()});
+
 				var impression_description = null;
 
 				if($(this).attr('id') == null) {
@@ -76,6 +93,7 @@ $('#vast-url-button').click(function(){
 
 
 			$(STUDY_TRACKERS).each(function(index, element){
+				ad.study_trackers.push({url: $(this).text()});
 				$('#study-ad-' + NUMBER_OF_ADS).append('<li><b>' + $(this).attr('id') +':</b> ' + $(this).text() + '</li>');
 			});
 
@@ -91,6 +109,12 @@ $('#vast-url-button').click(function(){
 
 				$(this).each(function(index, element){
 					//$('#tracking').append('<tr><td>' + creativeNumber + '</td><td>' + $(this).attr('event') + '</td><td>' + $(this).text()  + '</td></tr>');
+					var creative = {};
+
+					creative.media_files = [];
+					creative.video_clicks = [];
+					creative.creative_trackers = [];
+					creative.companion_banners = [];
 
 					var STR_TYPE = null;
 					var STR_DURATION = null;
@@ -127,6 +151,14 @@ $('#vast-url-button').click(function(){
 
 						$(MEDIA_FILES).each(function(index, element){
 
+							creative.media_files.push({
+								url: $(this).text(),
+								width: $(this).attr('width'),
+								height: $(this).attr('height'),
+								bitrate: $(this).attr('bitrate'),
+								type: $(this).attr('type')
+							});
+
 							var width = $(this).attr('width');
 							var height = $(this).attr('height');
 							var bitrate = $(this).attr('bitrate');
@@ -151,7 +183,7 @@ $('#vast-url-button').click(function(){
 						var VIDEO_CLICKS = $($(this)).find('VideoClicks').children();
 
 						$(VIDEO_CLICKS).each(function(index, element){
-
+							creative.video_clicks.push({type: element.nodeName, url: $(this).text()});
 							$('#video-trackers-' + creativeParentNumber).append('<dt>' + element.nodeName + '</dt><dd>' + $(this).text() + '</dd>');
 
 						});
@@ -166,6 +198,11 @@ $('#vast-url-button').click(function(){
 
 						//$('#tracking').append('<tr><td>' + creativeParentNumber + '</td><td>' + $(this).attr('event') + '</td><td>' + $(this).text()  + '</td></tr>');
 						$('#creative-trackers-' + creativeParentNumber).append('<dt>' + $(this).attr('event') + '</dt><dd>' + $(this).text() + '</dd>');
+						creative.creative_trackers.push({
+							event: $(this).attr('event'),
+							url: $(this).text()
+						});
+
 					});
 
 					// COMPANION ADS
@@ -189,20 +226,33 @@ $('#vast-url-button').click(function(){
 
 							var pieces = $($(this)).children();
 
+							var companionbanner = [];
 							$(pieces).each(function(index,element){
 
 								$('#comp-' + NUM_COMPANIONBANNERS + '-' + creativeParentNumber).append('<dt>' + element.nodeName + '</dt><dd>' + $(this).text() + '</dd>');
 								//console.log(element.nodeName);
-							});
+								companionbanner.push({name:element.nodeName, url: $(this).text()});
 
+							});
+							creative.companion_banners.push(companionbanner);
 							TALLY_NUM_COMPANIONBANNERS++;
 						});
 
 					}
 
+					ad.creatives.push(creative);
+
 				});
 				creativeParentNumber++;
 			});
+		window.ads.push(ad);
 		});
+		var template = $('#template').html();
+		Mustache.parse(template);   // optional, speeds up future uses
+		var rendered = Mustache.render(template, {
+						ads: window.ads});
+
+		$('#div_template').html(rendered);
 	});
 });
+
