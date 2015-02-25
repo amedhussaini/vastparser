@@ -107,7 +107,9 @@ $('#vast-url-button').click(function(){
 								width: $(this).attr('width'),
 								height: $(this).attr('height'),
 								bitrate: $(this).attr('bitrate'),
-								type: $(this).attr('type')
+								type: $(this).attr('type'),
+								apiFramework: $(this).attr('apiFramework'),
+								delivery: $(this).attr('delivery')
 							});
 
 
