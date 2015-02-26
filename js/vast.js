@@ -8,50 +8,23 @@ $('#vast-url-button').click(function(){
 
 		// TOP LEVEL VAST INFORMATION
 
-		var ADS = $(data).find('VAST').children();
-
-
-		var STR_NUMBER_OF_ADS = ADS.length;
-		var STR_VERSION = $(data).find('VAST').attr('version');
-
-
-		var NUMBER_OF_ADS = 0;
-
-		// MOBILE CHECK
-
-		var mfiles = $(data).find('MediaFiles').children();
-
-		$(mfiles).each(function(index, element){
-			var type = $(this).attr('type');
-			var bitrate = $(this).attr('bitrate');
-			var url = $(this).text();
-			var completed_string = type + ', ' + bitrate + 'kbps';
-			if( type == 'video/mp4') {
-				if( bitrate == 130 || bitrate == 150 || (299 < bitrate && bitrate < 385)) {
-					$('#meta-information').append('<dt><span class="label label-success">Mobile approved</span></dt><dd>' + completed_string + '</dd>');
-				}
-			}
-		});
+		var adsChildren = $(data).find('VAST').children();
 
 		// END MOBILE CHECK
 
-		$(ADS).each(function(index, element) {
+		$(adsChildren).each(function(index, element) {
 
 			var ad = {};
 
-			NUMBER_OF_ADS++;
-
 			// INLINE LEVEL DATA
 
-			var STR_ADSYSTEM = $(this).find('AdSystem').text();
-			var STR_ADTITLE = $(this).find('AdTitle').text();
-			var STR_DESCRIPTION = $(this).find('Description').text();
 			var IMPRESSION_TRACKERS = $(this).find('Impression');
 			var STUDY_TRACKERS = $(this).find('Survey');
 
-			ad.ad_system = STR_ADSYSTEM;
-			ad.ad_title = STR_ADTITLE;
-			ad.description = STR_DESCRIPTION;
+			ad.ad_system = $(this).find('AdSystem').text();
+			ad.ad_title = $(this).find('AdTitle').text();
+			ad.description = $(this).find('Description').text();
+			ad.isVpaid = null;
 			ad.impression_trackers = [];
 			ad.creatives = [];
 			ad.study_trackers = [];
@@ -112,7 +85,9 @@ $('#vast-url-button').click(function(){
 								delivery: $(this).attr('delivery')
 							});
 
-
+							if($(this).attr('apiFramework') === 'VPAID') {
+								ad.isVpaid = true;
+							}
 						});
 					}
 
