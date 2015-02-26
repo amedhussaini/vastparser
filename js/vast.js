@@ -1,4 +1,5 @@
 window.ads = [];
+window.ads.version = null;
 
 $('#vast-url-button').click(function(){
 
@@ -8,26 +9,29 @@ $('#vast-url-button').click(function(){
 
 		// TOP LEVEL VAST INFORMATION
 
-		var adsChildren = $(data).find('VAST').children();
 
+		window.ads.version = $(data).find('VAST').attr('version');
 		// END MOBILE CHECK
+
+		var adsChildren = $(data).find('VAST').children();
 
 		$(adsChildren).each(function(index, element) {
 
 			var ad = {};
+			ad.ad_system = $(this).find('AdSystem').text();
+			ad.ad_title = $(this).find('AdTitle').text();
+			ad.description = $(this).find('Description').text();
+			ad.type = null;
+			ad.impression_trackers = [];
+			ad.creatives = [];
+			ad.study_trackers = [];
 
 			// INLINE LEVEL DATA
 
 			var IMPRESSION_TRACKERS = $(this).find('Impression');
 			var STUDY_TRACKERS = $(this).find('Survey');
 
-			ad.ad_system = $(this).find('AdSystem').text();
-			ad.ad_title = $(this).find('AdTitle').text();
-			ad.description = $(this).find('Description').text();
-			ad.isVpaid = null;
-			ad.impression_trackers = [];
-			ad.creatives = [];
-			ad.study_trackers = [];
+
 
 
 			$(IMPRESSION_TRACKERS).each(function(index, element){
@@ -86,7 +90,9 @@ $('#vast-url-button').click(function(){
 							});
 
 							if($(this).attr('apiFramework') === 'VPAID') {
-								ad.isVpaid = true;
+								ad.type = 'VPAID';
+							} else {
+								ad.type = 'VAST';
 							}
 						});
 					}

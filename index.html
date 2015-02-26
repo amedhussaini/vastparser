@@ -13,7 +13,7 @@
 
     <!-- Bootstrap core CSS -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
-
+    <link href="css/custom.css" rel="stylesheet">
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
       <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
@@ -38,9 +38,87 @@
       </div>
     </div>
     <script id="template" type="x-tmpl-mustache">
+      <div class="panel panel-default">
+        <div class="panel-heading">General Information</div>
+        <div class="panel-body">
+          <dl class="dl-horizontal">
+            <dt>Version</dt>
+            <dd>{{ads.version}}</dd>
+          </dl>
+        </div>
+      </div>
+
     {{#ads}}
-      <b>{{ad_system}}</b>
+      <div class="panel panel-default">
+        <div class="panel-heading">{{ad_title}}</div>
+        <div class="panel-body">
+
+          <h4 class="creative-header">General</h4>
+          <dl class="dl-horizontal">
+            <dt>Ad System</dt>
+            <dd>{{ad_system}}</dd>
+            <dt>Description</dt>
+            <dd>{{description}}</dd>
+            <dt>Type</dt>
+            <dd><span class="label label-danger">{{type}}</span></dd>
+          </dl>
+          <h4 class="creative-header">Impression Trackers</h4>
+          <dl class="dl-horizontal">
+              {{#impression_trackers}}
+                <dt>URL</dt>
+                <dd>{{url}}</dd>
+              {{/impression_trackers}}
+          </dl>
+          <h4 class="creative-header">Study Trackers</h4>
+          <dl class="dl-horizontal">
+              {{#study_trackers}}
+                <dt>URL</dt>
+                <dd>{{url}}</dd>
+              {{/study_trackers}}
+          </dl>
+          <h4 class="creative-header">Creatives</h4>
+            {{#creatives}}
+
+              <h5 class="creative-header">Trackers</h5>
+              <dl class="dl-horizontal">
+              {{#creative_trackers}}
+                <dt>{{event}}</dt>
+                <dd>{{url}}</dd>
+              {{/creative_trackers}}
+              </dl>
+
+              <h5 class="creative-header">Video Clicks</h5>
+              <dl class="dl-horizontal">
+              {{#video_clicks}}
+                <dt>{{type}}</dt>
+                <dd>{{url}}</dd>
+              {{/video_clicks}}
+              </dl>
+
+              <h5 class="creative-header">Media Files</h5>
+              <dl class="dl-horizontal">
+              {{#media_files}}
+                <dt>{{type}}</dt>
+                <dd>{{url}}</dd>
+              {{/media_files}}
+              </dl>
+
+              <h5 class="creative-header">Companion Banners</h5>
+              <dl class="dl-horizontal">
+              {{#companion_banners}}
+                  {{#Array}}
+                  hi
+                  {{/Array}}
+              {{/companion_banners}}
+              </dl>
+
+            {{/creatives}}
+
+
+        </div>
+      </div>
     {{/ads}}
+
     </script>
 
 
