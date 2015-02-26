@@ -78,40 +78,41 @@
           </dl>
           <h4 class="creative-header">Creatives</h4>
             {{#creatives}}
-
+              <div class="well">
               <h5 class="creative-header">Trackers</h5>
               <dl class="dl-horizontal">
-              {{#creative_trackers}}
-                <dt>{{event}}</dt>
-                <dd>{{url}}</dd>
-              {{/creative_trackers}}
+                {{#creative_trackers}}
+                  <dt>{{event}}</dt>
+                  <dd>{{url}}</dd>
+                {{/creative_trackers}}
               </dl>
 
               <h5 class="creative-header">Video Clicks</h5>
               <dl class="dl-horizontal">
-              {{#video_clicks}}
-                <dt>{{type}}</dt>
-                <dd>{{url}}</dd>
-              {{/video_clicks}}
+                {{#video_clicks}}
+                  <dt>{{type}}</dt>
+                  <dd>{{url}}</dd>
+                {{/video_clicks}}
               </dl>
 
               <h5 class="creative-header">Media Files</h5>
               <dl class="dl-horizontal">
-              {{#media_files}}
-                <dt>{{type}}</dt>
-                <dd>{{url}}</dd>
-              {{/media_files}}
+                {{#media_files}}
+                  <dt>{{type}}</dt>
+                  <dd>{{url}}</dd>
+                {{/media_files}}
               </dl>
 
               <h5 class="creative-header">Companion Banners</h5>
               <dl class="dl-horizontal">
               {{#companion_banners}}
-                  {{#Array}}
-                  hi
-                  {{/Array}}
+                  {{# . }}
+                    <dt>{{name}}</dt>
+                    <dd>{{url}}</dd>
+                  {{/ . }}
               {{/companion_banners}}
               </dl>
-
+              </div>
             {{/creatives}}
 
 
