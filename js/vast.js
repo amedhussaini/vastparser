@@ -11,6 +11,7 @@ $('#vast-url-button').click(function(){
 
 
 		window.ads.version = $(data).find('VAST').attr('version');
+		window.ads.number_of_trackers = null;
 		// END MOBILE CHECK
 
 		var adsChildren = $(data).find('VAST').children();
@@ -21,11 +22,18 @@ $('#vast-url-button').click(function(){
 			ad.ad_system = $(this).find('AdSystem').text();
 			ad.ad_title = $(this).find('AdTitle').text();
 			ad.description = $(this).find('Description').text();
-			ad.type = null;
+			ad.type = 'VAST';
+
+			if($(this).find('VASTAdTagURI').length === 0) {
+				ad.wrapped_tag = 'NA';
+			} else {
+				ad.wrapped_tag = $(this).find('VASTAdTagURI').text();
+			}
+
+
 			ad.impression_trackers = [];
 			ad.creatives = [];
 			ad.study_trackers = [];
-
 			// INLINE LEVEL DATA
 
 			var IMPRESSION_TRACKERS = $(this).find('Impression');
@@ -38,18 +46,32 @@ $('#vast-url-button').click(function(){
 				ad.impression_trackers.push({url: $(this).text()});
 			});
 
+			window.ads.number_of_trackers += IMPRESSION_TRACKERS.length;
 
 			$(STUDY_TRACKERS).each(function(index, element){
 				ad.study_trackers.push({url: $(this).text()});
 			});
 
+			window.ads.number_of_trackers += STUDY_TRACKERS.length;
+
 			var INLINE = $(this).find('InLine');
+			var WRAPPED = $(this).find('Wrapper');
+			var NONLINEAR = $(this).find('NonLinear');
+			var ADTYPE = null;
+
+			if(INLINE.length > 0) {
+				ADTYPE = INLINE;
+			}
+			if(WRAPPED.length > 0) {
+				ADTYPE = WRAPPED;
+				ad.type = 'WRAPPED';
+			}
 
 			// CREATIVES
 
-			var CREATIVES = $(INLINE).find('Creatives').children();
+			var CREATIVES = $(ADTYPE).find('Creatives').children();
 
-			var creativeParentNumber = 1;
+
 
 			$(CREATIVES).each(function(index, element){
 
@@ -92,7 +114,7 @@ $('#vast-url-button').click(function(){
 							if($(this).attr('apiFramework') === 'VPAID') {
 								ad.type = 'VPAID';
 							} else {
-								ad.type = 'VAST';
+								//ad.type = 'VAST';
 							}
 						});
 					}
@@ -117,6 +139,8 @@ $('#vast-url-button').click(function(){
 
 
 					var trackingEvents = $(this).find('TrackingEvents').children();
+
+					window.ads.number_of_trackers += trackingEvents.length;
 
 					$(trackingEvents).each(function(index, element){
 
@@ -156,7 +180,7 @@ $('#vast-url-button').click(function(){
 								companionbanner.push({name:element.nodeName, url: $(this).text()});
 
 							});
-							creative.companion_banners.push(companionbanner);
+							creative.companion_banners.push({assets: companionbanner, meta: {width: width, height: height}});
 							TALLY_NUM_COMPANIONBANNERS++;
 						});
 
@@ -165,10 +189,14 @@ $('#vast-url-button').click(function(){
 					ad.creatives.push(creative);
 
 				});
-				creativeParentNumber++;
+
 			});
 		window.ads.push(ad);
 		});
+
+		// debug purposes
+		console.log(window.ads);
+
 		var template = $('#template').html();
 		Mustache.parse(template);   // optional, speeds up future uses
 		var rendered = Mustache.render(template, {
