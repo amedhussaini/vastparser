@@ -8,7 +8,17 @@ $('#vast-url-button').click(function(){
 	$.get(vastUrlString).done(function(data){
 
 		// TOP LEVEL VAST INFORMATION
-
+		var dict = [
+		{provider: 'Media Mind', keyword: 'serving-sys'},
+		{provider: 'Nielsen', keyword: 'imrworldwide.com'},
+		{provider: 'Insight Express', keyword: 'insightexpressai.com'},
+		{provider: 'comScore', keyword: 'b.scorecardresearch.com'},
+		{provider: 'DoubleVerify', keyword: 'doubleverify.com'},
+		{provider: 'Vizu', keyword: 'vizu.com'},
+		{provider: 'DoubleClick', keyword: 'doubleclick.net'},
+		{provider: 'Atlas', keyword: 'atdmt.com'},
+		{provider: 'Vindico', keyword: 'vindicosuite'}
+		];
 
 		window.ads.version = $(data).find('VAST').attr('version');
 		window.ads.number_of_trackers = null;
@@ -43,13 +53,29 @@ $('#vast-url-button').click(function(){
 
 
 			$(IMPRESSION_TRACKERS).each(function(index, element){
-				ad.impression_trackers.push({url: $(this).text()});
+				var currentUrl = $(this).text();
+				var provider = null;
+				dict.forEach(function(a) {
+					var n = currentUrl.search(a.keyword);
+					if(n > -1) {
+						provider = a.provider;
+					}
+				});
+				ad.impression_trackers.push({url: $(this).text(), provider: provider});
 			});
 
 			window.ads.number_of_trackers += IMPRESSION_TRACKERS.length;
 
 			$(STUDY_TRACKERS).each(function(index, element){
-				ad.study_trackers.push({url: $(this).text()});
+				var currentUrl = $(this).text();
+				var provider = null;
+				dict.forEach(function(a) {
+					var n = currentUrl.search(a.keyword);
+					if(n > -1) {
+						provider = a.provider;
+					}
+				});
+				ad.study_trackers.push({url: $(this).text(), provider: provider});
 			});
 
 			window.ads.number_of_trackers += STUDY_TRACKERS.length;
