@@ -78,7 +78,7 @@ $('#vast-url-button').click(function(){
 				$(this).each(function(index, element){
 					//$('#tracking').append('<tr><td>' + creativeNumber + '</td><td>' + $(this).attr('event') + '</td><td>' + $(this).text()  + '</td></tr>');
 					var creative = {};
-
+					creative.duration = 'NA';
 					creative.media_files = [];
 					creative.video_clicks = [];
 					creative.creative_trackers = [];
@@ -87,7 +87,9 @@ $('#vast-url-button').click(function(){
 
 					// MAIN HEADER
 
-
+					if ($(this).find('Duration').length !== 0) {
+						creative.duration = $(this).find('Duration').text();
+					}
 
 					// MEDIA FILES
 
