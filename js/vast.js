@@ -17,7 +17,8 @@ $('#vast-url-button').click(function(){
 		{provider: 'Vizu', keyword: 'vizu.com'},
 		{provider: 'DoubleClick', keyword: 'doubleclick.net'},
 		{provider: 'Atlas', keyword: 'atdmt.com'},
-		{provider: 'Vindico', keyword: 'vindicosuite'}
+		{provider: 'Vindico', keyword: 'vindicosuite'},
+		{provider: 'Adometry', keyword: 'js.dmtry.com'}
 		];
 
 		window.ads.version = $(data).find('VAST').attr('version');
@@ -73,6 +74,8 @@ $('#vast-url-button').click(function(){
 					var n = currentUrl.search(a.keyword);
 					if(n > -1) {
 						provider = a.provider;
+					} else {
+						provider = 'Unknown';
 					}
 				});
 				ad.study_trackers.push({url: $(this).text(), provider: provider});
