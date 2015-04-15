@@ -21,6 +21,12 @@ $('#vast-url-button').click(function(){
 		{provider: 'Adometry', keyword: 'js.dmtry.com'}
 		];
 
+		// vizu = study
+		// doubleverify = multiple products
+		// add capability value
+		// viewability, fraud, survey, impression tracking (eric, PYM (rebecca/stacy), claire)
+		// (ping ratana/stacy for additional fields)
+
 		window.ads.version = $(data).find('VAST').attr('version');
 		window.ads.number_of_trackers = null;
 		// END MOBILE CHECK
