@@ -2,6 +2,9 @@ window.ads = [];
 window.ads.version = null;
 
 $('#vast-url-button').click(function(){
+    //console.log(window.ads.length);
+    window.ads.length = 0;
+	$('#div_template').empty();
 
 	var vastUrlString = $('#vast-url-input').val();
 
@@ -29,9 +32,16 @@ $('#vast-url-button').click(function(){
 
 		window.ads.version = $(data).find('VAST').attr('version');
 		window.ads.number_of_trackers = null;
+		window.ads.isEmpty = 'XML Returned'
 		// END MOBILE CHECK
 
 		var adsChildren = $(data).find('VAST').children();
+
+		if (adsChildren.length === 0) {
+			
+		window.ads.isEmpty = 'Empty!'
+
+		}
 
 		$(adsChildren).each(function(index, element) {
 
