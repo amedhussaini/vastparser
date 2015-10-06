@@ -1,6 +1,11 @@
 window.ads = [];
 window.ads.version = null;
-
+window.basic = [];
+window.basic.version = "testing";
+window.ads.urls = [];
+window.ads.url_secure_number = 0;
+window.ads.url_unsecure_number = 0;
+window.ads.security_message = "Unknown";
 $('#vast-url-button').click(function(){
     //console.log(window.ads.length);
     window.ads.length = 0;
@@ -32,13 +37,14 @@ $('#vast-url-button').click(function(){
 
 		window.ads.version = $(data).find('VAST').attr('version');
 		window.ads.number_of_trackers = null;
-		window.ads.isEmpty = 'This tag appears to be active.'
+		window.ads.isEmpty = 'Active'
+		window.basic.isActive = 'Active'
 		// END MOBILE CHECK
 
 		var adsChildren = $(data).find('VAST').children();
 
 		if (adsChildren.length === 0) {
-			
+
 		window.ads.isEmpty = 'This tag appears to be empty.'
 
 		}
@@ -79,6 +85,7 @@ $('#vast-url-button').click(function(){
 					}
 				});
 				ad.impression_trackers.push({url: $(this).text(), provider: provider});
+				window.ads.urls.push({url: $(this).text(), secure: null});
 			});
 
 			window.ads.number_of_trackers += IMPRESSION_TRACKERS.length;
@@ -95,6 +102,7 @@ $('#vast-url-button').click(function(){
 					}
 				});
 				ad.study_trackers.push({url: $(this).text(), provider: provider});
+				window.ads.urls.push({url: $(this).text(), secure: null});
 			});
 
 			window.ads.number_of_trackers += STUDY_TRACKERS.length;
@@ -147,7 +155,7 @@ $('#vast-url-button').click(function(){
 						var MEDIA_FILES = $($(this)).find('MediaFiles').children();
 
 						$(MEDIA_FILES).each(function(index, element){
-
+							window.ads.urls.push({url: $(this).text(), secure: null});
 							creative.media_files.push({
 								url: $(this).text(),
 								width: $(this).attr('width'),
@@ -179,7 +187,7 @@ $('#vast-url-button').click(function(){
 
 						$(VIDEO_CLICKS).each(function(index, element){
 							creative.video_clicks.push({type: element.nodeName, url: $(this).text()});
-
+							window.ads.urls.push({url: $(this).text(), secure: null});
 						});
 					}
 					// TRACKERS
@@ -196,6 +204,7 @@ $('#vast-url-button').click(function(){
 							event: $(this).attr('event'),
 							url: $(this).text()
 						});
+						window.ads.urls.push({url: $(this).text(), secure: null});
 
 					});
 
@@ -225,7 +234,7 @@ $('#vast-url-button').click(function(){
 
 								//console.log(element.nodeName);
 								companionbanner.push({name:element.nodeName, url: $(this).text()});
-
+								window.ads.urls.push({url: $(this).text(), secure: null});
 							});
 							creative.companion_banners.push({assets: companionbanner, meta: {width: width, height: height}});
 							TALLY_NUM_COMPANIONBANNERS++;
@@ -244,12 +253,51 @@ $('#vast-url-button').click(function(){
 		// debug purposes
 		console.log(window.ads);
 
+
+		for (var x=0; x < window.ads.urls.length; x++) {
+
+			window.ads.urls[x].url.replace("", "");
+		}
+
+
+		for (var x=0; x < window.ads.urls.length; x++) {
+			switch(window.ads.urls[x].url.substr(0,5)) {
+				case "http:":
+					window.ads.urls[x].secure = false;
+					window.ads.url_unsecure_number = window.ads.url_unsecure_number + 1;
+				break;
+				case "https":
+					window.ads.urls[x].secure = true;
+					window.ads.url_secure_number = window.ads.url_secure_number + 1;
+				break;
+			}
+			console.log(window.ads.urls[x].url.substr(0,5));
+		}
+		if (window.ads.url_unsecure_number == 0 && window.ads.url_secure_number > 0) {
+
+			window.ads.security_message = "Secure";
+		}
+		if (window.ads.url_unsecure_number > 0 && window.ads.url_secure_number == 0) {
+
+			window.ads.security_message = "Non-secure";
+		}
+		if (window.ads.url_unsecure_number > 0 && window.ads.url_secure_number > 0) {
+
+			window.ads.security_message = "Mixed";
+		}
+		
 		var template = $('#template').html();
 		Mustache.parse(template);   // optional, speeds up future uses
 		var rendered = Mustache.render(template, {
 						ads: window.ads});
 
 		$('#div_template').html(rendered);
+
+		var basic_template = $('#basic_template').html();
+		Mustache.parse(basic_template);
+		var basic_rendered = Mustache.render(basic_template, { basic: window.basic});
+
+		$('#div_basic_template').html(basic_rendered);
 	});
 });
 

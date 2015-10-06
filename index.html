@@ -19,23 +19,35 @@
       <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
   </head>
-
   <body>
-
-  <br>
-  <div class="container-fluid">
-    <div class="row">
-      <div class="col-md-8">
-        <input id="vast-url-input" class="form-control" placeholder="VAST URL" value="http://ad.doubleclick.net/pfadx/N3158.129263.YUME/B8446438.114271426;sz=0x0;ord=$%7Brand%7D;dcmt=text/xml;yume_xml_timeout=10000;yume_ad_timeout=10000">
+    <br>
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-md-12">
+          <p class="lead">Tag Transparency Tool</p>
+        </div>
       </div>
-      <div class="col-md-4">
-        <input type="button" class="btn btn-primary" id="vast-url-button" value="Go"></input>
+      <div class="row">
+        <div class="col-md-8">
+          <input id="vast-url-input" class="form-control" placeholder="VAST URL" value="http://ad.doubleclick.net/pfadx/N3158.129263.YUME/B8446438.114271426;sz=0x0;ord=$%7Brand%7D;dcmt=text/xml;yume_xml_timeout=10000;yume_ad_timeout=10000">
+        </div>
+        <div class="col-md-4">
+          <input type="button" class="btn btn-primary" id="vast-url-button" value="Go"></input>
+        </div>
       </div>
+      <div class="row">
+        <div class="col-md-12">
+          <div id="div_template"></div>
+        </div>
+      </div>
+    <script id="basic_template" type="x-tmpl-mustache">
+    <div class="list-group">
+      <a href="#" class="list-group-item">
+        <h4 class="list-group-item-heading">{{basic.isActive}}</h4>
+        <p class="list-group-item-text">Tag Status</p>
+      </a>
     </div>
-    <div class="row">
-      <div class="col-md-12" id="div_template">
-      </div>
-    </div>
+    </script>
     <script id="template" type="x-tmpl-mustache">
       <div class="panel panel-default">
         <div class="panel-heading">Basic Tag Information</div>
@@ -47,101 +59,100 @@
             <dd>{{ads.number_of_trackers}}</dd>
             <dt>Feed Status</dt>
             <dd>{{ads.isEmpty}}</dd>
+            <dt>HTTP Protocol</dt>
+            <dd>{{ads.security_message}}</dd>
           </dl>
         </div>
       </div>
+      {{#ads}}
+        <div class="panel panel-default">
+          <div class="panel-heading">{{ad_title}}</div>
+          <div class="panel-body">
 
-    {{#ads}}
-      <div class="panel panel-default">
-        <div class="panel-heading">{{ad_title}}</div>
-        <div class="panel-body">
-
-          <h4 class="creative-header">General</h4>
-          <dl class="dl-horizontal">
-            <dt>Ad System</dt>
-            <dd>{{ad_system}}</dd>
-            <dt>Description</dt>
-            <dd>{{description}}</dd>
-            <dt>Type</dt>
-            <dd><span class="label label-danger">{{type}}</span></dd>
-            <dt>Wrapped Tag</dt>
-            <dd>{{wrapped_tag}}</dd>
-          </dl>
-          <h4 class="creative-header">Impression Trackers</h4>
-          <dl class="dl-horizontal">
-              {{#impression_trackers}}
-                <dt>URL ({{provider}})</dt>
-                <dd>{{url}}</dd>
-              {{/impression_trackers}}
-          </dl>
-          <h4 class="creative-header">Study Trackers</h4>
-          <dl class="dl-horizontal">
-              {{#study_trackers}}
-                <dt>URL ({{provider}})</dt>
-                <dd>{{url}}</dd>
-              {{/study_trackers}}
-          </dl>
-          <h4 class="creative-header">Creatives</h4>
-            {{#creatives}}
-              <div class="well">
-                <h4 class="creative-header">General</h4>
-                <dl class="dl-horizontal">
-                <dt>Duration</dt>
-                <dd>{{duration}}</dd>
-                </dl>
-                <h4 class="creative-header">Trackers</h4>
-                <dl class="dl-horizontal">
-                  {{#creative_trackers}}
-                    <dt>{{event}}</dt>
-                    <dd>{{url}}</dd>
-                  {{/creative_trackers}}
-                </dl>
-
-                <h4 class="creative-header">Video Clicks</h4>
-                <dl class="dl-horizontal">
-                  {{#video_clicks}}
-                    <dt>{{type}}</dt>
-                    <dd>{{url}}</dd>
-                  {{/video_clicks}}
-                </dl>
-
-                <h4 class="creative-header">Media Files</h4>
-                <dl class="dl-horizontal">
-                  {{#media_files}}
-                    <dt>
-                      {{bitrate}} kbps,
-                      {{type}}
-                    </dt>
-                    <dd>{{url}}</dd>
-                  {{/media_files}}
-                </dl>
-
-                <h4 class="creative-header">Companion Banners</h4>
-
-                {{#companion_banners}}
+            <h4 class="creative-header">General</h4>
+            <dl class="dl-horizontal">
+              <dt>Ad System</dt>
+              <dd>{{ad_system}}</dd>
+              <dt>Description</dt>
+              <dd>{{description}}</dd>
+              <dt>Type</dt>
+              <dd><span class="label label-danger">{{type}}</span></dd>
+              <dt>Wrapped Tag</dt>
+              <dd>{{wrapped_tag}}</dd>
+            </dl>
+            <h4 class="creative-header">Impression Trackers</h4>
+            <dl class="dl-horizontal">
+                {{#impression_trackers}}
+                  <dt>URL ({{provider}})</dt>
+                  <dd>{{url}}</dd>
+                {{/impression_trackers}}
+            </dl>
+            <h4 class="creative-header">Study Trackers</h4>
+            <dl class="dl-horizontal">
+                {{#study_trackers}}
+                  <dt>URL ({{provider}})</dt>
+                  <dd>{{url}}</dd>
+                {{/study_trackers}}
+            </dl>
+            <h4 class="creative-header">Creatives</h4>
+              {{#creatives}}
                 <div class="well">
-                  <h5>{{meta.width}}x{{meta.height}}</h5>
+                  <h4 class="creative-header">General</h4>
                   <dl class="dl-horizontal">
-                      {{#assets }}
-                        <dt>{{name}}</dt>
-                        <dd>{{url}}</dd>
-                      {{/assets }}
+                  <dt>Duration</dt>
+                  <dd>{{duration}}</dd>
                   </dl>
+                  <h4 class="creative-header">Trackers</h4>
+                  <dl class="dl-horizontal">
+                    {{#creative_trackers}}
+                      <dt>{{event}}</dt>
+                      <dd>{{url}}</dd>
+                    {{/creative_trackers}}
+                  </dl>
+
+                  <h4 class="creative-header">Video Clicks</h4>
+                  <dl class="dl-horizontal">
+                    {{#video_clicks}}
+                      <dt>{{type}}</dt>
+                      <dd>{{url}}</dd>
+                    {{/video_clicks}}
+                  </dl>
+
+                  <h4 class="creative-header">Media Files</h4>
+                  <dl class="dl-horizontal">
+                    {{#media_files}}
+                      <dt>
+                        {{bitrate}} kbps,
+                        {{type}}
+                      </dt>
+                      <dd>{{url}}</dd>
+                    {{/media_files}}
+                  </dl>
+
+
+
+                  {{#companion_banners}}
+                  <h4 class="creative-header">Companion Banners</h4>
+                  <div class="well">
+                    <h5>{{meta.width}}x{{meta.height}}</h5>
+                    <dl class="dl-horizontal">
+                        {{#assets }}
+                          <dt>{{name}}</dt>
+                          <dd>{{url}}</dd>
+                        {{/assets }}
+                    </dl>
+                  </div>
+                  {{/companion_banners}}
+
                 </div>
-                {{/companion_banners}}
-
-              </div>
-            {{/creatives}}
+              {{/creatives}}
 
 
+          </div>
         </div>
-      </div>
-    {{/ads}}
-
+      {{/ads}}
     </script>
-
-
-  </div><!-- /.container -->
+    </div><!-- /.container -->
 
 
     <!-- Bootstrap core JavaScript
