@@ -29,7 +29,7 @@
       </div>
       <div class="row">
         <div class="col-md-8">
-          <input id="vast-url-input" class="form-control" placeholder="VAST URL" value="http://ad.doubleclick.net/pfadx/N3158.129263.YUME/B8446438.114271426;sz=0x0;ord=$%7Brand%7D;dcmt=text/xml;yume_xml_timeout=10000;yume_ad_timeout=10000">
+          <input id="vast-url-input" class="form-control" placeholder="http://ad.doubleclick.net/pfadx/N3158.129263.YUME/B8446438.114271426;sz=0x0;ord=$%7Brand%7D;dcmt=text/xml;yume_xml_timeout=10000;yume_ad_timeout=10000" value="">
         </div>
         <div class="col-md-4">
           <input type="button" class="btn btn-primary" id="vast-url-button" value="Go"></input>
@@ -40,7 +40,7 @@
           <div id="div_template"></div>
         </div>
       </div>
-    <script id="basic_template" type="x-tmpl-mustache">
+    <script id="basic_template" type="text/x-handlebars-template">
     <div class="list-group">
       <a href="#" class="list-group-item">
         <h4 class="list-group-item-heading">{{basic.isActive}}</h4>
@@ -59,8 +59,8 @@
             <dd>{{ads.number_of_trackers}}</dd>
             <dt>Feed Status</dt>
             <dd>{{ads.isEmpty}}</dd>
-            <dt>HTTP Protocol</dt>
-            <dd>{{ads.security_message}}</dd>
+            <dt>Secure or Non-secure?</dt>
+            <dd><a href="#" id="protocol_details">{{ads.security_message}}</a></dd>
           </dl>
         </div>
       </div>
@@ -161,6 +161,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
     <script src="js/mustache.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.3/handlebars.min.js"></script>
     <script src="js/vast.js"></script>
     <script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
@@ -172,5 +173,28 @@
   ga('send', 'pageview');
 
 </script>
+
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Red = Unsecure | Green = Secure</h4>
+      </div>
+      <div class="modal-body">
+      <table class="table">
+      <thead>
+      <tr>
+        <td>URL</td>
+      </tr>
+      </thead>
+      <tbody id="modal-details">
+      </tbody>
+      </table>
+      </div>
+    </div>
+  </div>
+</div>
   </body>
 </html>

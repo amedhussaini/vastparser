@@ -1,14 +1,15 @@
-window.ads = [];
-window.ads.version = null;
-window.basic = [];
-window.basic.version = "testing";
-window.ads.urls = [];
-window.ads.url_secure_number = 0;
-window.ads.url_unsecure_number = 0;
-window.ads.security_message = "Unknown";
+window.t3 = {};
+window.t3.ads = [];
+window.t3.ads.version = null;
+window.t3.ads.urls = [];
+window.t3.ads.url_secure_number = 0;
+window.t3.ads.url_unsecure_number = 0;
+window.t3.ads.security_message = "Unknown";
+window.t3.ads.manual_check_required = false;
+
 $('#vast-url-button').click(function(){
-    //console.log(window.ads.length);
-    window.ads.length = 0;
+    //console.log(window.t3.ads.length);
+    window.t3.ads.length = 0;
 	$('#div_template').empty();
 
 	var vastUrlString = $('#vast-url-input').val();
@@ -26,7 +27,9 @@ $('#vast-url-button').click(function(){
 		{provider: 'DoubleClick', keyword: 'doubleclick.net'},
 		{provider: 'Atlas', keyword: 'atdmt.com'},
 		{provider: 'Vindico', keyword: 'vindicosuite'},
-		{provider: 'Adometry', keyword: 'js.dmtry.com'}
+		{provider: 'Adometry', keyword: 'js.dmtry.com'},
+		{provider: 'Zedo', keyword: 'zedo.com'},
+		{provider: 'Innovid', keyword: 'innovid.com'}
 		];
 
 		// vizu = study
@@ -35,17 +38,16 @@ $('#vast-url-button').click(function(){
 		// viewability, fraud, survey, impression tracking (eric, PYM (rebecca/stacy), claire)
 		// (ping ratana/stacy for additional fields)
 
-		window.ads.version = $(data).find('VAST').attr('version');
-		window.ads.number_of_trackers = null;
-		window.ads.isEmpty = 'Active'
-		window.basic.isActive = 'Active'
+		window.t3.ads.version = $(data).find('VAST').attr('version');
+		window.t3.ads.number_of_trackers = null;
+		window.t3.ads.isEmpty = 'Active'
 		// END MOBILE CHECK
 
 		var adsChildren = $(data).find('VAST').children();
 
 		if (adsChildren.length === 0) {
 
-		window.ads.isEmpty = 'This tag appears to be empty.'
+		window.t3.ads.isEmpty = 'This tag appears to be empty.'
 
 		}
 
@@ -85,10 +87,11 @@ $('#vast-url-button').click(function(){
 					}
 				});
 				ad.impression_trackers.push({url: $(this).text(), provider: provider});
-				window.ads.urls.push({url: $(this).text(), secure: null});
+				//window.t3.ads.urls.push({url: $(this).text(), secure: null});
+				cleanUrlAndAddToArray($(this).text(), window.t3.ads.urls);
 			});
 
-			window.ads.number_of_trackers += IMPRESSION_TRACKERS.length;
+			window.t3.ads.number_of_trackers += IMPRESSION_TRACKERS.length;
 
 			$(STUDY_TRACKERS).each(function(index, element){
 				var currentUrl = $(this).text();
@@ -102,10 +105,11 @@ $('#vast-url-button').click(function(){
 					}
 				});
 				ad.study_trackers.push({url: $(this).text(), provider: provider});
-				window.ads.urls.push({url: $(this).text(), secure: null});
+				//window.t3.ads.urls.push({url: $(this).text(), secure: null});
+				cleanUrlAndAddToArray($(this).text(), window.t3.ads.urls);
 			});
 
-			window.ads.number_of_trackers += STUDY_TRACKERS.length;
+			window.t3.ads.number_of_trackers += STUDY_TRACKERS.length;
 
 			var INLINE = $(this).find('InLine');
 			var WRAPPED = $(this).find('Wrapper');
@@ -155,7 +159,8 @@ $('#vast-url-button').click(function(){
 						var MEDIA_FILES = $($(this)).find('MediaFiles').children();
 
 						$(MEDIA_FILES).each(function(index, element){
-							window.ads.urls.push({url: $(this).text(), secure: null});
+							//window.t3.ads.urls.push({url: $(this).text(), secure: null});
+							cleanUrlAndAddToArray($(this).text(), window.t3.ads.urls);
 							creative.media_files.push({
 								url: $(this).text(),
 								width: $(this).attr('width'),
@@ -187,7 +192,8 @@ $('#vast-url-button').click(function(){
 
 						$(VIDEO_CLICKS).each(function(index, element){
 							creative.video_clicks.push({type: element.nodeName, url: $(this).text()});
-							window.ads.urls.push({url: $(this).text(), secure: null});
+							//window.t3.ads.urls.push({url: $(this).text(), secure: null});
+							cleanUrlAndAddToArray($(this).text(), window.t3.ads.urls);
 						});
 					}
 					// TRACKERS
@@ -195,7 +201,7 @@ $('#vast-url-button').click(function(){
 
 					var trackingEvents = $(this).find('TrackingEvents').children();
 
-					window.ads.number_of_trackers += trackingEvents.length;
+					window.t3.ads.number_of_trackers += trackingEvents.length;
 
 					$(trackingEvents).each(function(index, element){
 
@@ -204,8 +210,8 @@ $('#vast-url-button').click(function(){
 							event: $(this).attr('event'),
 							url: $(this).text()
 						});
-						window.ads.urls.push({url: $(this).text(), secure: null});
-
+						//window.t3.ads.urls.push({url: $(this).text(), secure: null});
+						cleanUrlAndAddToArray($(this).text(), window.t3.ads.urls);
 					});
 
 					// COMPANION ADS
@@ -234,7 +240,8 @@ $('#vast-url-button').click(function(){
 
 								//console.log(element.nodeName);
 								companionbanner.push({name:element.nodeName, url: $(this).text()});
-								window.ads.urls.push({url: $(this).text(), secure: null});
+								cleanUrlAndAddToArray($(this).text(), window.t3.ads.urls);
+								//window.t3.ads.urls.push({url: $(this).text(), secure: null});
 							});
 							creative.companion_banners.push({assets: companionbanner, meta: {width: width, height: height}});
 							TALLY_NUM_COMPANIONBANNERS++;
@@ -247,57 +254,79 @@ $('#vast-url-button').click(function(){
 				});
 
 			});
-		window.ads.push(ad);
+		window.t3.ads.push(ad);
 		});
 
 		// debug purposes
-		console.log(window.ads);
+		console.log(window.t3.ads);
 
 
-		for (var x=0; x < window.ads.urls.length; x++) {
 
-			window.ads.urls[x].url.replace("", "");
-		}
-
-
-		for (var x=0; x < window.ads.urls.length; x++) {
-			switch(window.ads.urls[x].url.substr(0,5)) {
+		for (var x=0; x < window.t3.ads.urls.length; x++) {
+			switch(window.t3.ads.urls[x].url.substr(0,5).trim()) {
 				case "http:":
-					window.ads.urls[x].secure = false;
-					window.ads.url_unsecure_number = window.ads.url_unsecure_number + 1;
+					window.t3.ads.urls[x].secure = false;
+					window.t3.ads.url_unsecure_number = window.t3.ads.url_unsecure_number + 1;
 				break;
 				case "https":
-					window.ads.urls[x].secure = true;
-					window.ads.url_secure_number = window.ads.url_secure_number + 1;
+					window.t3.ads.urls[x].secure = true;
+					window.t3.ads.url_secure_number = window.t3.ads.url_secure_number + 1;
 				break;
+				default:
+					window.t3.ads.manual_check_required = true;
 			}
-			console.log(window.ads.urls[x].url.substr(0,5));
+			console.log(window.t3.ads.urls[x].url.substr(0,5));
 		}
-		if (window.ads.url_unsecure_number == 0 && window.ads.url_secure_number > 0) {
+		if (window.t3.ads.url_unsecure_number == 0 && window.t3.ads.url_secure_number > 0) {
 
-			window.ads.security_message = "Secure";
+			window.t3.ads.security_message = "Secure";
 		}
-		if (window.ads.url_unsecure_number > 0 && window.ads.url_secure_number == 0) {
+		if (window.t3.ads.url_unsecure_number > 0 && window.t3.ads.url_secure_number == 0) {
 
-			window.ads.security_message = "Non-secure";
+			window.t3.ads.security_message = "Non-secure";
 		}
-		if (window.ads.url_unsecure_number > 0 && window.ads.url_secure_number > 0) {
+		if (window.t3.ads.url_unsecure_number > 0 && window.t3.ads.url_secure_number > 0) {
 
-			window.ads.security_message = "Mixed";
+			window.t3.ads.security_message = "Mixed";
 		}
 		
-		var template = $('#template').html();
-		Mustache.parse(template);   // optional, speeds up future uses
-		var rendered = Mustache.render(template, {
-						ads: window.ads});
+		if (window.t3.ads.manual_check_required) {
+			window.t3.ads.security_message = "Requires manual check"
+		}
+
+		var source = $('#template').html();
+		var template = Handlebars.compile(source);   // optional, speeds up future uses
+		var rendered = template(window.t3);
 
 		$('#div_template').html(rendered);
 
-		var basic_template = $('#basic_template').html();
-		Mustache.parse(basic_template);
-		var basic_rendered = Mustache.render(basic_template, { basic: window.basic});
+		$('#vast-url-button').fadeOut();
+		$('#protocol_details').click(function(){
+			if(window.t3.ads.security_message == "Mixed") {
+				$('#myModal').modal({
+				  keyboard: true
+				});
+			}
+		});
 
-		$('#div_basic_template').html(basic_rendered);
+		for (var x=0; x < window.t3.ads.urls.length; x++) {
+
+			if (window.t3.ads.urls[x].secure == false) {
+				$('#modal-details').append("<tr class=\"danger\"><td>" + window.t3.ads.urls[x].url + "</td></tr>");
+			} else {
+				$('#modal-details').append("<tr class=\"success\"><td>" + window.t3.ads.urls[x].url + "</td></tr>");
+
+			}
+		}
+
 	});
 });
+
+function cleanUrlAndAddToArray(string, array) {
+
+	var cleanedString = string.trim().replace("<![CDATA[", "").replace("]]>", "");
+
+	array.push({url: cleanedString, secure: null});
+
+}
 

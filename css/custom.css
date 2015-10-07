@@ -16,3 +16,11 @@ text-align: left;
 text-overflow: ellipsis;
 white-space: nowrap;
 }
+
+#myModal .modal-dialog
+{
+    width: 100%; /* your width */
+}
+#modal-details {
+	font-size: 10px;
+}
