@@ -1,0 +1,415 @@
+/*
+
+**********
+*
+* z-index stuff
+*
+**********
+
+.dropdown: 1980;
+#viewport: 998;
+#drag-cb:1900;
+left black box:400;
+right black box: 400;
+top black box: 400;
+bottom black box: 400;
+myModal: 10000;
+
+#button-set-guides: 2000;
+#guide_video: 1000;
+#guide_cb: 1000;
+.video_wrapper: 999;
+
+learning modal: 2000;
+browser warning: 2000;
+flvPlayerDiv640: -1;
+player additional menu: 2000;
+
+*/
+
+#cb-outline {
+	width: 300px;
+	height: 250px;
+	z-index: 9999;
+	background-color: red;
+	position: fixed;
+	top: 30%;
+	left: 40%;
+	display:none;
+	opacity: 0.5;
+}
+
+.dropdown {
+	background-color: #ffffff;
+	width: 75%;
+	left: 50%;
+	margin: 0 0 0 -37.5%;
+	position: fixed;
+	top:-254px;
+	z-index:1980;
+	border:0px solid #cccccc;
+	-webkit-border-bottom-right-radius: 10px;
+	-webkit-border-bottom-left-radius: 10px;
+	-moz-border-radius-bottomright: 10px;
+	-moz-border-radius-bottomleft: 10px;
+	border-bottom-right-radius: 10px;
+	border-bottom-left-radius: 10px;
+}
+
+#viewport {
+	z-index:998;
+	position:fixed;
+	top:0;
+	left:0;
+}
+
+#iframe-viewport {
+	border: 1px solid #ddd;
+	position: fixed;
+	left: 50%;
+	margin: 0 0 0 -50%;
+	height:1268px;
+	width: 100%;
+	background: url("symphony.png");
+}
+
+#cb {
+	position:fixed;
+	margin: auto 0;
+	top:0;
+	right: 0;
+	height: 300px;
+	width: 250px;
+	display:none;
+
+}
+#drag-cb {
+	z-index: 1000;
+	width:500px;
+}
+
+#cb-iframe {
+	border:0px;
+	margin:0;
+	padding:0;
+	height:100%;
+	width:100%;
+}
+#icon-set {
+	position: absolute;
+	left: 0;
+	top:50%;
+	z-index:3000;
+}
+
+#leftBlackBox {
+	position: absolute;
+	background-color: #000;
+	width:25px;
+	z-index:400;
+
+}
+
+#rightBlackBox {
+	position:absolute;
+	background-color: #000;
+	width:25px;
+	z-index:400;
+}
+
+#topBlackBox {
+	position: absolute;
+	background-color: #000;
+	height:25px;
+	z-index:400;
+}
+
+#bottomBlackBox {
+	position: absolute;
+	background-color: #000;
+	height:25px;
+	z-index:400;
+}
+
+
+#button-step-addons {
+	display:none;
+}
+
+#myModal {
+	z-index: 10000;
+}
+
+#button-set-guides {
+	display:none;
+	z-index:2000;
+}
+
+.guide_video {
+	background-color: rgb(135, 172, 235);
+	position:fixed;
+	/*border: 1px solid #ccc;*/
+	left: 216px;
+	top: 165px;
+	height: 400px;
+	width: 710px;
+	/*
+	-webkit-box-shadow:inset 0px 0px 0px 10px rgb(85, 172, 235);
+    -moz-box-shadow:inset 0px 0px 0px 10px rgb(85, 172, 235);
+    box-shadow:inset 0px 0px 0px 10px rgb(85, 172, 235);
+    */
+    display: none;
+    z-index:1000;
+}
+
+.guide_cb {
+	background-color: rgb(164, 135, 235);
+	position:fixed;
+	top: 30%;
+	right:15%;
+	/*border: 1px solid #ccc;*/
+	height:250px;
+	width:300px;
+	/*
+    -webkit-box-shadow:inset 0px 0px 0px 10px rgb(114, 135, 235);
+    -moz-box-shadow:inset 0px 0px 0px 10px rgb(114, 135, 235);
+    box-shadow:inset 0px 0px 0px 10px rgb(114, 135, 235);
+    */
+    display:none;
+    z-index: 1000;
+}
+#video-dimensions {
+color: rgb(85, 172, 235);
+text-align:center;
+line-height: 200px;
+}
+
+
+
+.video-wrapper {
+	position:fixed;
+	z-index: 999;
+
+}
+
+.cb-wrapper {
+	position: fixed;
+	bottom: 0;
+	left:0;
+	width: 300px;
+	height: 250px;
+	z-index: 1000;
+
+}
+
+.dropdown-toggle-wrapper {
+	border-left: 1px solid #ddd;
+	border-right: 1px solid #ddd;
+}
+
+.tab-pane-borders {
+
+	border-left: 1px solid #ddd;
+	border-right: 1px solid #ddd;
+
+}
+
+.panel-group-adjustments {
+	width: 98%;
+	margin: auto;
+}
+
+/* remove annyoing button outline */
+
+.no-outline {
+  outline: none; // this one
+}
+
+
+/* bootstrap overrwites */
+
+.nav-tabs {
+border-bottom: 1px solid #ddd;
+border-right: 1px solid #ededed;
+}
+
+.btn:focus, .btn:active:focus, .btn.active:focus {
+outline: none;
+}
+
+#learning-modal {
+	position: fixed;
+	bottom: -140px;
+	width: 75%;
+	left: 50%;
+	margin: 0 0 0 -37.5%;
+	margin-bottom: 0px;
+	z-index: 2000;
+}
+
+#browser-warning {
+	position:fixed;
+	top:0;
+	z-index: 2000;
+	width: 100%;
+	border-radius: 0px;
+	display:none;
+}
+
+#flvPlayerDiv640 {
+width: 1280px;
+height: 720px;
+position: relative;
+float: left;
+overflow: hidden;
+z-index:-1;
+}
+
+#player_overlay {
+	position: fixed;
+	z-index: 1002;
+	display:none;
+	opacity: 0.85;
+}
+
+#mobile_timer {
+	font-family: Roboto;
+	color: #fff;
+	position: fixed;
+	top: 0px;
+	left: 0px;
+	font-size: 16px;
+	z-index: 1024;
+	display:none;
+}
+
+#additional_controls_play {
+	position: fixed;
+	top: 0px;
+	left: 0px;
+	z-index: 1024;
+}
+
+#additional_controls_replay {
+	position: fixed;
+	top: 0px;
+	left: 0px;
+	z-index: 1024;
+}
+
+#additional_controls_pause {
+	position: fixed;
+	top: 0px;
+	left: 0px;
+	z-index: 1024;
+}
+
+
+#mobile-timer-input {
+	width: 25px;
+}
+
+.panel-title a {
+    display: block;
+    padding: 10px 15px;
+    margin: -10px -15px;
+    text-decoration: none;
+}
+
+#playerAdditionalMenu {
+display:none;
+position: absolute;
+right: 0;
+width: 125px;
+height:580px;
+border: 1px solid #cccccc;
+top: 20%;
+background-color: #d9edf7;
+padding-top: 5px;
+padding-left: 5px;
+z-index:2001;
+}
+
+#playerAdditionalMenu p {
+	margin-top: 5px;
+	font-weight: bold;
+}
+
+#playerAdditionalMenu2 {
+	display:none;
+position: absolute;
+right: 0;
+width: 125px;
+height:500px;
+border: 1px solid #cccccc;
+top: 25%;
+background-color: #d9edf7;
+padding-top: 5px;
+padding-left: 5px;
+z-index:2000;
+}
+
+#remove-yume-logo {
+
+display:none;
+
+}
+
+#file-upload-success {
+position:fixed;
+width:100%;
+z-index: 2000;
+}
+
+#play_ctrl, #pause_ctrl {
+margin-left: -10px;
+}
+
+#resize-complete {
+	display:none;
+}
+
+#button-set-guides, #button-step-addons {
+	position: fixed;
+	top:0;
+	left:0;
+	z-index:1000;
+}
+
+#hide-all {
+	z-index: 2500;
+	position:fixed;
+	top:0;
+	right:0;
+}
+
+#ipad-sublay {
+  position: fixed;
+  /*width: 585px;
+  height: 450px;*/
+  background-color: #000000;
+  left: 80px;
+  top: 140px;
+  z-index: 500;
+  display:none;
+}
+
+#text-overlay {
+	display:none;
+	position: fixed;
+  	top: 0px;
+	left: 0px;
+ 	color: #000;
+ 	z-index: 1005;
+}
+
+#ipad-background {
+  position: absolute;
+  top: 150px;
+  left: 80px;
+  width: 600px;
+  height: 450px;
+  background-color: #000;
+  z-index: 500;
+  display:none;
+}
