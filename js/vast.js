@@ -29,7 +29,9 @@ $('#vast-url-button').click(function(){
 		{provider: 'Vindico', keyword: 'vindicosuite'},
 		{provider: 'Adometry', keyword: 'js.dmtry.com'},
 		{provider: 'Zedo', keyword: 'zedo.com'},
-		{provider: 'Innovid', keyword: 'innovid.com'}
+		{provider: 'Innovid', keyword: 'innovid.com'},
+		{provider: 'Telemetry', keyword: 'telemetryverification.net'},
+		{provider: 'BlueKai', keyword: 'bluekai.com'}
 		];
 
 		// vizu = study
