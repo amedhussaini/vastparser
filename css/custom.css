@@ -6,3 +6,9 @@ tr td:first-child {
 tr.separator td {
 	background-color: #ccc;
 }
+.fixed {
+	table-layout: fixed;
+}
+.fixed td {
+	word-wrap: break-word;
+}
