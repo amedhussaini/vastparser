@@ -42,8 +42,13 @@
         <tr class="separator"><td>Study Trackers</td><td></td></tr>
         {{#list study_trackers}} <tr><td>{{provider}}</td><td>{{url}}</td></tr> {{/list}}
         <tr class="separator"><td>Creatives</td><td></td></tr>
-        {{#list mediafiles}}  <tr><td>{{type}}</td><td>{{url}}</td></tr> {{/list}}    
-
+        {{#creatives}}
+          <tr><td>{{type}}</td><td></td></tr>
+          {{#array}}
+            <tr><td>{{type}}</td><td>{{url}}</td></tr>
+          {{/array}}
+        {{/creatives}}
+        <tr class="separator"><td>Tracking Events</td><td></td></tr>
         </tbody>
 
 

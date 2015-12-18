@@ -27,6 +27,9 @@ var t3 = (function($) {
             context.study_trackers = [];
             context.creatives = [];
             context.mediafiles = [];
+            context.tracking_events = [];
+            context.video_trackers = [];
+            context.creatives.testing = [];
 
             context.version = $(data).find('VAST').attr("version");
             context.number_of_ads = $(data).find('VAST').children().length
@@ -34,7 +37,7 @@ var t3 = (function($) {
             var _impression_trackers = $(data).find('Impression');
             var _study_trackers = $(data).find('Survey');
             var _creatives = $(data).find('Creatives').children();
-
+            var _trackingEvents = $(data).find('Creatives').children()
             $(_impression_trackers).each(function(index, element) {
                 context.impression_trackers.push({url: $(this).text(), provider: _getVendor($(this).text())});
             });
@@ -44,10 +47,15 @@ var t3 = (function($) {
             });
 
             $(_creatives).each(function(index, element) {
+                var idx = index;
+                context.creatives.push( {type: _getTypeOfCreative($(this)) });
+                context.creatives[index].array = [];
+
                 var media_files = $(this).find('MediaFiles').children();
                 $(media_files).each(function(index, element) {
                     var media_files = [];
                     context.mediafiles.push({type: $(this).attr("type"), url: $(this).text()});
+                    context.creatives[idx].array.push({type: $(this).attr("type"), url: $(this).text()});
                 });
             });
 
