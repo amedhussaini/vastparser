@@ -19,20 +19,33 @@
     <div class="container-fluid">
       <div class="col-md-12">
         <table class="table">
-        <tbody>
-        <tr>
-          <td>Vast Version</td>
-          <td id="version"></td>
-        </tr>
-        <tr>
-          <td>Number of Ads</td>
-          <td id="number-of-ads"></td>
-        </tr>
+        <tbody id="table-body">
         </tbody>
         </table>
       </div>
+<script id="template" type="text/x-handlebars-template">
+
+        <tbody>
+        <tr class="separator"><td>General Information</td><td></td></tr>
+        <tr>
+          <td>Vast Version</td>
+          <td id="version">{{version}}</td>
+        </tr>
+        <tr>
+          <td>Number of Ads</td>
+          <td id="number-of-ads">{{number_of_ads}}</td>
+        </tr>
+        <tr class="separator"><td>Impression Trackers</td><td></td></tr>
+        {{#list impression_trackers}} <tr><td>{{provider}}</td><td>{{url}}</td></tr> {{/list}}
+        <tr class="separator"><td>Study Trackers</td><td></td></tr>
+        {{#list study_trackers}} <tr><td>{{provider}}</td><td>{{url}}</td></tr> {{/list}}
+        </tbody>
+
+</script>
     </div>
+        <script src="js/handlebars.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+
     <script src="js/vast2.js"></script>
   </body>
 </html>

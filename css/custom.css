@@ -2,3 +2,7 @@ tr td:first-child {
 	width: 20%;
 	background-color: #eee;
 }
+
+tr.separator td {
+	background-color: #ccc;
+}
