@@ -5,13 +5,16 @@ tr td:first-child {
 tr.major-separator td {
 	background-color: #4d94ff;
 	font-size: 1.7em;
+	color: #fff;
 }
 tr.minor-separator td {
 	background-color: #80b3ff;
 	font-size: 1.2em;
+	color: #fff;
 }
 tr.tiny-separator td {
 	background-color: #b3d1ff;
+	color: #fff;
 }
 
 .fixed {
@@ -19,4 +22,9 @@ tr.tiny-separator td {
 }
 .fixed td {
 	word-wrap: break-word;
+}
+
+.quickview div {
+	font-size: 1.2em;
+	text-align: center;
 }

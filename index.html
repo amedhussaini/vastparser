@@ -18,6 +18,13 @@
   <body>
     <div class="container-fluid">
       <div class="col-md-12">
+        <p class="lead">Quick View</p>
+        <div class="row quickview">
+
+        </div>
+      </div>
+      <div class="col-md-12">
+        <p class="lead">Details</p>
         <table class="table fixed">
         <tbody id="table-body">
         </tbody>
@@ -25,8 +32,31 @@
       </div>
 
     </div>
-      <script id="template" type="text/x-handlebars-template">
+      <script id="quickview" type="text/x-handlebars-template">
+        <div class="col-md-6">
+          <div class="panel panel-info">
+            <div class="panel-heading">
+              <h3 class="panel-title">Type of Tag</h3>
+            </div>
+            <div class="panel-body">
+                {{type_of_feed}}
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
 
+          <div class="panel panel-info">
+            <div class="panel-heading">
+              <h3 class="panel-title">Tracker Count</h3>
+            </div>
+            <div class="panel-body">
+                {{number_of_trackers}}
+            </div>
+          </div>
+        </div>
+
+      </script>
+      <script id="template" type="text/x-handlebars-template">
         <tbody>
         <tr class="major-separator"><td>Top Level Information</td><td></td></tr>
         <tr>
@@ -42,7 +72,7 @@
         {{#list impression_trackers}} <tr><td>{{provider}}</td><td>{{url}}</td></tr> {{/list}}
         {{/if}}
         {{#if study_trackers}}
-        <tr class="major-separator"><td>Study Trackers</td><td></td></tr>
+        <tr class="major-separator"><td>Survey Trackers</td><td></td></tr>
         {{#list study_trackers}} <tr><td>{{provider}}</td><td>{{url}}</td></tr> {{/list}}
         {{/if}}
         <tr class="major-separator"><td>Creatives</td><td></td></tr>
@@ -74,11 +104,7 @@
           {{/companion_ads}}
           {{/if}} 
         {{/creatives}}
-
-
         </tbody>
-
-
       </script>
     <script src="js/handlebars.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
