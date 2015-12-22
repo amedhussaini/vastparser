@@ -1,17 +1,22 @@
 tr td:first-child {
 	width: 20%;
-	background-color: #eee;
+	background-color: #e5f0ff;
+}
+tr.major-separator td {
+	background-color: #4d94ff;
+	font-size: 1.7em;
+}
+tr.minor-separator td {
+	background-color: #80b3ff;
+	font-size: 1.2em;
+}
+tr.tiny-separator td {
+	background-color: #b3d1ff;
 }
 
-tr.separator td {
-	background-color: #ccc;
-}
 .fixed {
 	table-layout: fixed;
 }
 .fixed td {
 	word-wrap: break-word;
-}
-tr.mid-separator td:first-child {
-	background-color: #ff8080;
 }

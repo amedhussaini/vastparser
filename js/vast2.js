@@ -79,7 +79,17 @@ var t3 = (function($) {
 
                 var companion_ads = $(this).find('CompanionAds').children();
                 $(companion_ads).each(function(index, element) {
-                    context.creatives[_index].video_clicks.push({});
+
+                    var co_ad_elements = $(this).children()
+
+                        $(co_ad_elements).each(function(index, element) {
+
+                            if (element.nodeName != 'TrackingEvents') {
+                                context.creatives[_index].companion_ads.push({type: element.nodeName, url: $(this).text()});
+                            }
+
+                        });
+
                 });
 
 

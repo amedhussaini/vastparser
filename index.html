@@ -28,7 +28,7 @@
       <script id="template" type="text/x-handlebars-template">
 
         <tbody>
-        <tr class="separator"><td>General Information</td><td></td></tr>
+        <tr class="major-separator"><td>Top Level Information</td><td></td></tr>
         <tr>
           <td>Vast Version</td>
           <td id="version">{{version}}</td>
@@ -38,34 +38,40 @@
           <td id="number-of-ads">{{number_of_ads}}</td>
         </tr>
         {{#if impression_trackers}}
-        <tr class="separator"><td>Impression Trackers</td><td></td></tr>
+        <tr class="major-separator"><td>Impression Trackers</td><td></td></tr>
         {{#list impression_trackers}} <tr><td>{{provider}}</td><td>{{url}}</td></tr> {{/list}}
         {{/if}}
         {{#if study_trackers}}
-        <tr class="separator"><td>Study Trackers</td><td></td></tr>
+        <tr class="major-separator"><td>Study Trackers</td><td></td></tr>
         {{#list study_trackers}} <tr><td>{{provider}}</td><td>{{url}}</td></tr> {{/list}}
         {{/if}}
-        <tr class="separator"><td>Creatives</td><td></td></tr>
+        <tr class="major-separator"><td>Creatives</td><td></td></tr>
         {{#creatives}}
-          <tr><td>{{type}}</td><td></td></tr>
+          <tr class="minor-separator"><td>{{type}}</td><td></td></tr>
           {{#if media_files}}
-          <tr class="mid-separator"><td>Media Files</td><td></td></tr>
+          <tr class="tiny-separator"><td>Media Files</td><td></td></tr>
           {{#media_files}}
             <tr><td>{{type}}</td><td>{{url}}</td></tr>
           {{/media_files}}
           {{/if}}
 
           {{#if tracking_events}}
-          <tr class="mid-separator"><td>Tracking Events</td><td></td></tr>
+          <tr class="tiny-separator"><td>Tracking Events</td><td></td></tr>
           {{#tracking_events}}
             <tr><td>{{event}}</td><td>{{url}}</td></tr>
           {{/tracking_events}}
           {{/if}} 
           {{#if video_clicks}}
-          <tr class="mid-separator"><td>Video Clicks</td><td></td></tr>
+          <tr class="tiny-separator"><td>Video Clicks</td><td></td></tr>
           {{#video_clicks}}
             <tr><td>{{type}}</td><td>{{url}}</td></tr>
           {{/video_clicks}}
+          {{/if}}
+          {{#if companion_ads}}
+          <tr class="tiny-separator"><td>Companion Ads</td><td></td></tr>
+          {{#companion_ads}}
+            <tr><td>{{type}}</td><td>{{url}}</td></tr>
+          {{/companion_ads}}
           {{/if}} 
         {{/creatives}}
 
