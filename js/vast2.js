@@ -29,7 +29,7 @@ var t3 = (function($) {
             context.mediafiles = [];
             context.tracking_events = [];
             context.video_trackers = [];
-            context.creatives.testing = [];
+            
 
             context.version = $(data).find('VAST').attr("version");
             context.number_of_ads = $(data).find('VAST').children().length
@@ -47,16 +47,42 @@ var t3 = (function($) {
             });
 
             $(_creatives).each(function(index, element) {
-                var idx = index;
-                context.creatives.push( {type: _getTypeOfCreative($(this)) });
-                context.creatives[index].array = [];
+                var _index = index;
+                context.creatives.push({type: _getTypeOfCreative($(this))});
+                context.creatives[index].media_files = [];
+                context.creatives[index].tracking_events = [];
+                context.creatives[index].video_clicks = [];
+                context.creatives[index].companion_ads = [];
 
+                // MediaFiles
                 var media_files = $(this).find('MediaFiles').children();
                 $(media_files).each(function(index, element) {
-                    var media_files = [];
-                    context.mediafiles.push({type: $(this).attr("type"), url: $(this).text()});
-                    context.creatives[idx].array.push({type: $(this).attr("type"), url: $(this).text()});
+                    //var media_files = [];
+                    //context.mediafiles.push({type: $(this).attr("type"), url: $(this).text()});
+                    context.creatives[_index].media_files.push({type: $(this).attr("type"), url: $(this).text()});
                 });
+
+                // TrackingEvents
+                var tracking_events = $(this).find('TrackingEvents').children();
+                $(tracking_events).each(function(index, element) {
+                    context.creatives[_index].tracking_events.push({event: $(this).attr("event"), url: $(this).text()});
+                });
+
+                // VideoClicks
+
+                var video_clicks = $(this).find('VideoClicks').children();
+                $(video_clicks).each(function(index, element) {
+                    context.creatives[_index].video_clicks.push({type: element.nodeName, url: $(this).text()});
+                });
+
+                // CompanionAds
+
+                var companion_ads = $(this).find('CompanionAds').children();
+                $(companion_ads).each(function(index, element) {
+                    context.creatives[_index].video_clicks.push({});
+                });
+
+
             });
 
             var source   = $("#template").html();

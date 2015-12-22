@@ -37,18 +37,39 @@
           <td>Number of Ads</td>
           <td id="number-of-ads">{{number_of_ads}}</td>
         </tr>
+        {{#if impression_trackers}}
         <tr class="separator"><td>Impression Trackers</td><td></td></tr>
         {{#list impression_trackers}} <tr><td>{{provider}}</td><td>{{url}}</td></tr> {{/list}}
+        {{/if}}
+        {{#if study_trackers}}
         <tr class="separator"><td>Study Trackers</td><td></td></tr>
         {{#list study_trackers}} <tr><td>{{provider}}</td><td>{{url}}</td></tr> {{/list}}
+        {{/if}}
         <tr class="separator"><td>Creatives</td><td></td></tr>
         {{#creatives}}
           <tr><td>{{type}}</td><td></td></tr>
-          {{#array}}
+          {{#if media_files}}
+          <tr class="mid-separator"><td>Media Files</td><td></td></tr>
+          {{#media_files}}
             <tr><td>{{type}}</td><td>{{url}}</td></tr>
-          {{/array}}
+          {{/media_files}}
+          {{/if}}
+
+          {{#if tracking_events}}
+          <tr class="mid-separator"><td>Tracking Events</td><td></td></tr>
+          {{#tracking_events}}
+            <tr><td>{{event}}</td><td>{{url}}</td></tr>
+          {{/tracking_events}}
+          {{/if}} 
+          {{#if video_clicks}}
+          <tr class="mid-separator"><td>Video Clicks</td><td></td></tr>
+          {{#video_clicks}}
+            <tr><td>{{type}}</td><td>{{url}}</td></tr>
+          {{/video_clicks}}
+          {{/if}} 
         {{/creatives}}
-        <tr class="separator"><td>Tracking Events</td><td></td></tr>
+
+
         </tbody>
 
 

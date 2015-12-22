@@ -12,3 +12,6 @@ tr.separator td {
 .fixed td {
 	word-wrap: break-word;
 }
+tr.mid-separator td:first-child {
+	background-color: #ff8080;
+}
