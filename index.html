@@ -70,7 +70,7 @@
               <h3 class="panel-title">Secure URLs</h3>
             </div>
             <div class="panel-body">
-                {{number_of_secure_trackers}}/{{number_of_trackers}}
+                {{number_of_secure_trackers}}/{{number_of_general_urls}}
             </div>
           </div>
         </div>
@@ -123,6 +123,13 @@
           {{/companion_ads}}
           {{/if}} 
         {{/creatives}}
+        {{#if creatives_video_click}}
+        <tr class="major-separator"><td>Video Clicks</td><td></td></tr>
+        
+        {{#creatives_video_click}}
+        <tr><td>{{type}}</td><td>{{url}}</td></tr>
+        {{/creatives_video_click}}
+        {{/if}}
         </tbody>
       </script>
     <script src="js/handlebars.js"></script>

@@ -3,7 +3,7 @@ var t3 = (function($, window) {
     // internal settings
 
     var debug = false;
-    var tag = "http://ad.doubleclick.net/pfadx/N3158.129263.YUME/B8446438.114271426;sz=0x0;ord=$%7Brand%7D;dcmt=text/xml;yume_xml_timeout=10000;yume_ad_timeout=10000";
+    var tag = "http://rtr.innovid.com/r1.560ebd0d9c0ac6.53548068;cb=${rand}";
     //var tag = "https://experiences.fuiszmedia.com/5633bf0b9ede1703001a3dae/vast.xml";
     //var tag = "http://fw.adsafeprotected.com/vast/fwjsvid/st/47149/6673121/skeleton.js?originalVast=https://bs.serving-sys.com/BurstingPipe/adServer.bs?cn=is&c=23&pl=VAST&pli=15243107&PluID=0&pos=1000&ord=${rand}&cim=1";
     //var tag = "http://bs.serving-sys.com/BurstingPipe/adServer.bs?cn=is&c=23&pl=VAST&pli=13959650&PluID=0&pos=9578&ord=${rand}&cim=1&yume_xml_timeout=10000&yume_ad_timeout=10000";
@@ -29,81 +29,107 @@ var t3 = (function($, window) {
             context.mediafiles = [];
             context.tracking_events = [];
             context.video_trackers = [];
-            
+            context.creatives_video_click = [];
 
             context.version = $(data).find('VAST').attr("version");
             context.number_of_ads = $(data).find('VAST').children().length
             context.type_of_feed = "";
             context.number_of_trackers = 0;
             context.number_of_secure_trackers = 0;
+            context.number_of_general_urls = 0;
 
             var _impression_trackers = $(data).find('Impression');
             var _study_trackers = $(data).find('Survey');
             var _creatives = $(data).find('Creatives').children();
-            var _trackingEvents = $(data).find('Creatives').children()
+            var _trackingEvents = $(data).find('Creatives').children();
+
+            // impression elements
             $(_impression_trackers).each(function(index, element) {
+                _incrementGeneralUrls($(this).text());
                 _incrementTrackers();
                 _checkUrlForSecurity($(this).text());
                 context.impression_trackers.push({url: $(this).text(), provider: _getVendor($(this).text())});
 
             });
 
+            // study elements
             $(_study_trackers).each(function(index,element) {
-                console.log("hello");
+                _incrementGeneralUrls($(this).text());
                 _incrementTrackers();
                 _checkUrlForSecurity($(this).text());
                 context.study_trackers.push({url: $(this).text(), provider: _getVendor($(this).text())});
             });
 
+            // creative elements
             $(_creatives).each(function(index, element) {
-                var _index = index;
-                context.creatives.push({type: _getTypeOfCreative($(this))});
-                context.type_of_feed = _getTypeOfTag($(this));
-                context.creatives[index].media_files = [];
-                context.creatives[index].tracking_events = [];
-                context.creatives[index].video_clicks = [];
-                context.creatives[index].companion_ads = [];
 
-                // MediaFiles
-                var media_files = $(this).find('MediaFiles').children();
-                $(media_files).each(function(index, element) {
-                    //var media_files = [];
-                    //context.mediafiles.push({type: $(this).attr("type"), url: $(this).text()});
-                    context.creatives[_index].media_files.push({type: $(this).attr("type"), url: $(this).text()});
-                });
 
-                // TrackingEvents
-                var tracking_events = $(this).find('TrackingEvents').children();
-                $(tracking_events).each(function(index, element) {
-                    _incrementTrackers()
-                    _checkUrlForSecurity($(this).text());
-                    context.creatives[_index].tracking_events.push({event: $(this).attr("event"), url: $(this).text()});
-                });
+                // this is to account for vendors who place a 'VideoClicks' element as a child of 'Creatives', which is not in spec
+                if (element.nodeName == 'Creative') {
+                    var _index = index;
+                    context.creatives.push({type: _getTypeOfCreative($(this))});
+                    context.type_of_feed = _getTypeOfTag($(this));
+                    context.creatives[index].media_files = [];
+                    context.creatives[index].tracking_events = [];
+                    context.creatives[index].video_clicks = [];
+                    context.creatives[index].companion_ads = [];
 
-                // VideoClicks
+                    // MediaFiles
+                    var media_files = $(this).find('MediaFiles').children();
+                    $(media_files).each(function(index, element) {
+                        _incrementGeneralUrls($(this).text());
+                        _checkUrlForSecurity($(this).text());
+                        context.creatives[_index].media_files.push({type: $(this).attr("type"), url: $(this).text()});
+                    });
 
-                var video_clicks = $(this).find('VideoClicks').children();
-                $(video_clicks).each(function(index, element) {
-                    context.creatives[_index].video_clicks.push({type: element.nodeName, url: $(this).text()});
-                });
+                    // TrackingEvents
+                    var tracking_events = $(this).find('TrackingEvents').children();
+                    //console.log(tracking_events);
+                    $(tracking_events).each(function(index, element) {
+                        _incrementGeneralUrls($(this).text());
+                        _incrementTrackers();
+                        _checkUrlForSecurity($(this).text());
+                        context.creatives[_index].tracking_events.push({event: $(this).attr("event"), url: $(this).text()});
+                    });
 
-                // CompanionAds
+                    // VideoClicks
 
-                var companion_ads = $(this).find('CompanionAds').children();
-                $(companion_ads).each(function(index, element) {
+                    var video_clicks = $(this).find('VideoClicks').children();
+                    //console.log(video_clicks);
+                    $(video_clicks).each(function(index, element) {
+                        //console.log($(this).text());
+                        _incrementGeneralUrls($(this).text());
+                        _checkUrlForSecurity($(this).text());
+                        context.creatives[_index].video_clicks.push({type: element.nodeName, url: $(this).text()});
+                    });
 
-                    var co_ad_elements = $(this).children()
+                    // CompanionAds
 
-                        $(co_ad_elements).each(function(index, element) {
+                    var companion_ads = $(this).find('CompanionAds').children();
+                    $(companion_ads).each(function(index, element) {
 
-                            if (element.nodeName != 'TrackingEvents') {
-                                context.creatives[_index].companion_ads.push({type: element.nodeName, url: $(this).text()});
-                            }
+                        var co_ad_elements = $(this).children()
 
-                        });
+                            $(co_ad_elements).each(function(index, element) {
 
-                });
+                                if (element.nodeName != 'TrackingEvents') {
+                                    context.creatives[_index].companion_ads.push({type: element.nodeName, url: $(this).text()});
+                                }
 
+                            });
+
+                    });
+                } else if (element.nodeName == 'VideoClicks') {
+
+
+                    $(this).each(function(index, element) {
+
+                        context.creatives_video_click.push({type: element.nodeName, url: $(this).text()});
+                    });
+
+
+
+                }
 
             });
 
@@ -165,12 +191,10 @@ var t3 = (function($, window) {
             var media_files = object.find('MediaFiles').children();
 
             $(media_files).each(function(index, element) {
-                console.log($(this).attr("type"));
                 switch($(this).attr("type")) {
                     case "application/shockwave-flash":
                         type = "VPAID (Flash)";
                     case "application/x-shockwave-flash":
-                        console.log('hello');
                         type = "VPAID (Flash)";
                     case "application/javascript":
                         type = "VPAID (JavaScript)";
@@ -194,12 +218,10 @@ var t3 = (function($, window) {
             var media_files = object.find('MediaFiles').children();
 
             $(media_files).each(function(index, element) {
-                console.log($(this).attr("type"));
                 switch($(this).attr("type")) {
                     case "application/shockwave-flash":
                         type = "VPAID (Flash)";
                     case "application/x-shockwave-flash":
-                        console.log('hello');
                         type = "VPAID (Flash)";
                     case "application/javascript":
                         type = "VPAID (JavaScript)";
@@ -222,7 +244,6 @@ var t3 = (function($, window) {
     }
 
     function _checkUrlForSecurity(url) {
-        console.log(url.substr(0,5));
 
         switch(url.substr(0,5).trim()) {
             case "http:":
@@ -233,6 +254,11 @@ var t3 = (function($, window) {
             break;
 
         }
+    }
+
+    function _incrementGeneralUrls(url) {
+        //console.log(url);
+        context.number_of_general_urls++;
     }
 
     return {
