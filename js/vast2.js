@@ -1,4 +1,4 @@
-var t3 = (function($) {
+var t3 = (function($, window) {
 
     // internal settings
 
@@ -11,8 +11,8 @@ var t3 = (function($) {
         tag = uri;
     }
 
-    function getTag(uri) {
-        return tag;
+    function getTag() {
+        tag = window.document.getElementById("tag-input").value;
     }
 
     function setTagData(data) {
@@ -35,7 +35,7 @@ var t3 = (function($) {
             context.number_of_ads = $(data).find('VAST').children().length
             context.type_of_feed = "";
             context.number_of_trackers = 0;
-
+            context.number_of_secure_trackers = 0;
 
             var _impression_trackers = $(data).find('Impression');
             var _study_trackers = $(data).find('Survey');
@@ -43,12 +43,15 @@ var t3 = (function($) {
             var _trackingEvents = $(data).find('Creatives').children()
             $(_impression_trackers).each(function(index, element) {
                 _incrementTrackers();
+                _checkUrlForSecurity($(this).text());
                 context.impression_trackers.push({url: $(this).text(), provider: _getVendor($(this).text())});
 
             });
 
             $(_study_trackers).each(function(index,element) {
+                console.log("hello");
                 _incrementTrackers();
+                _checkUrlForSecurity($(this).text());
                 context.study_trackers.push({url: $(this).text(), provider: _getVendor($(this).text())});
             });
 
@@ -73,6 +76,7 @@ var t3 = (function($) {
                 var tracking_events = $(this).find('TrackingEvents').children();
                 $(tracking_events).each(function(index, element) {
                     _incrementTrackers()
+                    _checkUrlForSecurity($(this).text());
                     context.creatives[_index].tracking_events.push({event: $(this).attr("event"), url: $(this).text()});
                 });
 
@@ -136,18 +140,18 @@ var t3 = (function($) {
             {provider: 'Telemetry', keyword: 'telemetryverification.net'},
             {provider: 'BlueKai', keyword: 'bluekai.com'},
             {provider: 'Aggregate Knowledge (Neustar)', keyword: 'agkn.com'},
-            {provider: 'Segment', keyword: 'segment.io'}
+            {provider: 'Segment', keyword: 'segment.io'},
+            {provider: 'BrandAds', keyword: 'brandads.net'}
         ];
 
         dict.forEach(function(a) {
             var n = url.search(a.keyword);
-            if(n > -1) {
+            if (n > -1) {
                 provider = a.provider;
             }
         });
 
         return provider;
-
     }
 
     function _getTypeOfCreative(object) {
@@ -217,17 +221,38 @@ var t3 = (function($) {
         context.number_of_trackers++;
     }
 
+    function _checkUrlForSecurity(url) {
+        console.log(url.substr(0,5));
+
+        switch(url.substr(0,5).trim()) {
+            case "http:":
+            
+            break;
+            case "https":
+            context.number_of_secure_trackers++;         
+            break;
+
+        }
+    }
+
     return {
         setTag: setTag,
         getTag: getTag,
-        start: parseTag
+        start: parseTag,
+        test: _checkUrlForSecurity
     };
 
-})($);
+})($, window);
 
 
 $(document).ready(function() {
+
     t3.start();
+
+    $('#button-input').click(function(){
+        t3.getTag();
+        t3.start();
+    });
 
 }); 
 
