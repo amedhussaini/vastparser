@@ -27,13 +27,12 @@
       <br>
       <br>
       <div class="col-md-12">
-        <p class="lead">Quick View</p>
+
         <div class="row quickview">
 
         </div>
       </div>
       <div class="col-md-12">
-        <p class="lead">Details</p>
         <table class="table fixed">
         <tbody id="table-body">
         </tbody>
@@ -42,6 +41,9 @@
 
     </div>
       <script id="quickview" type="text/x-handlebars-template">
+
+        {{#if has_ads}}
+
         <div class="col-md-4">
           <div class="panel panel-info">
             <div class="panel-heading">
@@ -74,8 +76,18 @@
             </div>
           </div>
         </div>
+
+        {{else}}
+
+          <div class="col-md-12">
+            <p class="lead">This feed appears to be empty.</p>
+          </div>
+
+        {{/if}}
       </script>
       <script id="template" type="text/x-handlebars-template">
+      {{#if has_ads}}
+
         <tbody>
         <tr class="major-separator"><td>Top Level Information</td><td></td></tr>
         <tr>
@@ -131,6 +143,8 @@
         {{/creatives_video_click}}
         {{/if}}
         </tbody>
+
+        {{/if}}
       </script>
     <script src="js/handlebars.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
