@@ -2,6 +2,14 @@ tr td:first-child {
 	width: 20%;
 	background-color: #e5f0ff;
 }
+tr td:first-child > p {
+	margin: 0;
+	line-height:1em;
+}
+
+tr td > span.glyphicon {
+	margin-right: 4px;
+}
 tr.major-separator td {
 	background-color: #4d94ff;
 	font-size: 1.7em;
@@ -28,3 +36,4 @@ tr.tiny-separator td {
 	font-size: 1.2em;
 	text-align: center;
 }
+

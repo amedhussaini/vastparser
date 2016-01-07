@@ -18,12 +18,14 @@
   <body>
     <div class="container-fluid">
       <br>
-      <div class="col-md-8">
+      <div class="col-md-6 col-md-offset-3">
         <input type="text" class="form-control" id="tag-input" placeholder="vast url">
       </div>
-      <div class="col-md-4">
+      <div class="col-md-3">
           <button id="button-input" class="btn btn-default">Go</button>
       </div>
+      <br>
+      <br>
       <br>
       <br>
       <div class="col-md-12">
@@ -100,11 +102,11 @@
         </tr>
         {{#if impression_trackers}}
         <tr class="major-separator"><td>Impression Trackers</td><td></td></tr>
-        {{#list impression_trackers}} <tr><td>{{provider}}</td><td>{{url}}</td></tr> {{/list}}
+        {{#list impression_trackers}} <tr><td>{{#if secure}}<span class="glyphicon glyphicon-ok-circle" aria-hidden="true" style="color: #33A846;"></span>{{else}} <span class="glyphicon glyphicon-remove-circle" aria-hidden="true" style="color: #DA2E42;"></span> {{/if}} {{provider}}</td><td>{{url}}</td></tr> {{/list}}
         {{/if}}
         {{#if study_trackers}}
         <tr class="major-separator"><td>Survey Trackers</td><td></td></tr>
-        {{#list study_trackers}} <tr><td>{{provider}}</td><td>{{url}}</td></tr> {{/list}}
+        {{#list study_trackers}} <tr><td>{{#if secure}}<span class="glyphicon glyphicon-ok-circle" aria-hidden="true" style="color: #33A846;"></span>{{else}} <span class="glyphicon glyphicon-remove-circle" aria-hidden="true" style="color: #DA2E42;"></span> {{/if}} {{provider}}</td><td>{{url}}</td></tr> {{/list}}
         {{/if}}
         <tr class="major-separator"><td>Creatives</td><td></td></tr>
         {{#creatives}}
@@ -112,26 +114,26 @@
           {{#if media_files}}
           <tr class="tiny-separator"><td>Media Files</td><td></td></tr>
           {{#media_files}}
-            <tr><td>{{type}}</td><td>{{url}}</td></tr>
+            <tr><td>{{#if secure}}<span class="glyphicon glyphicon-ok-circle" aria-hidden="true" style="color: #33A846;"></span>{{else}} <span class="glyphicon glyphicon-remove-circle" aria-hidden="true" style="color: #DA2E42;"></span> {{/if}} {{type}}</td><td>{{url}}</td></tr>
           {{/media_files}}
           {{/if}}
 
           {{#if tracking_events}}
           <tr class="tiny-separator"><td>Tracking Events</td><td></td></tr>
           {{#tracking_events}}
-            <tr><td>{{event}}</td><td>{{url}}</td></tr>
+            <tr><td>{{#if secure}}<span class="glyphicon glyphicon-ok-circle" aria-hidden="true" style="color: #33A846;"></span>{{else}} <span class="glyphicon glyphicon-remove-circle" aria-hidden="true" style="color: #DA2E42;"></span> {{/if}} {{event}}</td><td>{{url}}</td></tr>
           {{/tracking_events}}
           {{/if}} 
           {{#if video_clicks}}
           <tr class="tiny-separator"><td>Video Clicks</td><td></td></tr>
           {{#video_clicks}}
-            <tr><td>{{type}}</td><td>{{url}}</td></tr>
+            <tr><td>{{#if secure}}<span class="glyphicon glyphicon-ok-circle" aria-hidden="true" style="color: #33A846;"></span>{{else}} <span class="glyphicon glyphicon-remove-circle" aria-hidden="true" style="color: #DA2E42;"></span> {{/if}} {{type}}</td><td>{{url}}</td></tr>
           {{/video_clicks}}
           {{/if}}
           {{#if companion_ads}}
           <tr class="tiny-separator"><td>Companion Ads</td><td></td></tr>
           {{#companion_ads}}
-            <tr><td>{{type}}</td><td>{{url}}</td></tr>
+            <tr><td>{{#if secure}}<span class="glyphicon glyphicon-ok-circle" aria-hidden="true" style="color: #33A846;"></span>{{else}} <span class="glyphicon glyphicon-remove-circle" aria-hidden="true" style="color: #DA2E42;"></span> {{/if}} {{type}}</td><td>{{url}}</td></tr>
           {{/companion_ads}}
           {{/if}} 
         {{/creatives}}

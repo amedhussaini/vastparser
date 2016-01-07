@@ -67,8 +67,8 @@ var t3 = (function($, window) {
             $(_impression_trackers).each(function(index, element) {
                 _incrementGeneralUrls($(this).text());
                 _incrementTrackers();
-                _checkUrlForSecurity($(this).text());
-                context.impression_trackers.push({url: $(this).text(), provider: _getVendor($(this).text())});
+                var is_secure = _checkUrlForSecurity($(this).text());
+                context.impression_trackers.push({url: $(this).text(), provider: _getVendor($(this).text()), secure: is_secure});
 
             });
 
@@ -76,8 +76,8 @@ var t3 = (function($, window) {
             $(_study_trackers).each(function(index,element) {
                 _incrementGeneralUrls($(this).text());
                 _incrementTrackers();
-                _checkUrlForSecurity($(this).text());
-                context.study_trackers.push({url: $(this).text(), provider: _getVendor($(this).text())});
+                var is_secure = _checkUrlForSecurity($(this).text());
+                context.study_trackers.push({url: $(this).text(), provider: _getVendor($(this).text()), secure: is_secure});
             });
 
             // creative elements
@@ -98,8 +98,8 @@ var t3 = (function($, window) {
                     var media_files = $(this).find('MediaFiles').children();
                     $(media_files).each(function(index, element) {
                         _incrementGeneralUrls($(this).text());
-                        _checkUrlForSecurity($(this).text());
-                        context.creatives[_index].media_files.push({type: $(this).attr("type"), url: $(this).text()});
+                        var is_secure = _checkUrlForSecurity($(this).text());
+                        context.creatives[_index].media_files.push({type: $(this).attr("type"), url: $(this).text(), secure: is_secure});
                     });
 
                     // TrackingEvents
@@ -108,8 +108,9 @@ var t3 = (function($, window) {
                     $(tracking_events).each(function(index, element) {
                         _incrementGeneralUrls($(this).text());
                         _incrementTrackers();
-                        _checkUrlForSecurity($(this).text());
-                        context.creatives[_index].tracking_events.push({event: $(this).attr("event"), url: $(this).text()});
+                        var is_secure = _checkUrlForSecurity($(this).text());
+                        context.creatives[_index].tracking_events.push({event: $(this).attr("event"), url: $(this).text(), secure: is_secure});
+                        //console.log(context.creatives[_index].tracking_events);
                     });
 
                     // VideoClicks
@@ -119,8 +120,8 @@ var t3 = (function($, window) {
                     $(video_clicks).each(function(index, element) {
                         //console.log($(this).text());
                         _incrementGeneralUrls($(this).text());
-                        _checkUrlForSecurity($(this).text());
-                        context.creatives[_index].video_clicks.push({type: element.nodeName, url: $(this).text()});
+                        var is_secure = _checkUrlForSecurity($(this).text());
+                        context.creatives[_index].video_clicks.push({type: element.nodeName, url: $(this).text(), secure: is_secure});
                     });
 
                     // CompanionAds
@@ -134,8 +135,8 @@ var t3 = (function($, window) {
 
                                 if (element.nodeName != 'TrackingEvents') {
                                     _incrementGeneralUrls($(this).text());
-                                    _checkUrlForSecurity($(this).text());            
-                                    context.creatives[_index].companion_ads.push({type: element.nodeName, url: $(this).text()});
+                                    var is_secure = _checkUrlForSecurity($(this).text());            
+                                    context.creatives[_index].companion_ads.push({type: element.nodeName, url: $(this).text(), secure: is_secure});
                                 }
 
                             });
@@ -146,8 +147,8 @@ var t3 = (function($, window) {
 
                     $(this).each(function(index, element) {
                         _incrementGeneralUrls($(this).text());
-                        _checkUrlForSecurity($(this).text());
-                        context.creatives_video_click.push({type: element.nodeName, url: $(this).text()});
+                        var is_secure = _checkUrlForSecurity($(this).text());
+                        context.creatives_video_click.push({type: element.nodeName, url: $(this).text(), secure: is_secure});
                     });
 
 
@@ -159,12 +160,12 @@ var t3 = (function($, window) {
             var source   = $("#template").html();
             var template = Handlebars.compile(source);
             var html    = template(context);
-            $(".table").html(html);
+            $(".table").html(html).hide().fadeIn(800);
 
             var source2   = $("#quickview").html();
             var template2 = Handlebars.compile(source2);
             var html2    = template2(context);
-            $(".quickview").html(html2);
+            $(".quickview").html(html2).hide().fadeIn(200);
 
         });
     }
@@ -285,10 +286,11 @@ var t3 = (function($, window) {
 
         switch(url.substr(0,5).trim()) {
             case "http:":
-            
+                return null;
             break;
             case "https":
-            context.number_of_secure_trackers++;         
+            context.number_of_secure_trackers++;
+                return "true";      
             break;
 
         }
