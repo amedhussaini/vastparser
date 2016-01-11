@@ -6,6 +6,9 @@ var t3 = (function($, window) {
     var tag = "http://vast.brandads.net/vast?line_item=13649676&subid1=novpaid&ba_cb=${rand}";
     var _type = null;
     var _creativeType = null;
+    var _isIas = false;
+    var _iasTag = "";
+    var _iasOriginalTag = "";
     //var tag = "https://experiences.fuiszmedia.com/5633bf0b9ede1703001a3dae/vast.xml";
     //var tag = "http://fw.adsafeprotected.com/vast/fwjsvid/st/47149/6673121/skeleton.js?originalVast=https://bs.serving-sys.com/BurstingPipe/adServer.bs?cn=is&c=23&pl=VAST&pli=15243107&PluID=0&pos=1000&ord=${rand}&cim=1";
     //var tag = "http://bs.serving-sys.com/BurstingPipe/adServer.bs?cn=is&c=23&pl=VAST&pli=13959650&PluID=0&pos=9578&ord=${rand}&cim=1&yume_xml_timeout=10000&yume_ad_timeout=10000";
@@ -26,10 +29,26 @@ var t3 = (function($, window) {
         _type = null;
         _creativeType = null;
 
+            _checkIasUseCase(tag);
+
+            if (_isIas) {
+                tag = _iasTag;
+                console.log(tag);
+            }
+
+
+
         $.get(tag).done(function(data) {
+
 
             context = {};
             //can haz cheeseburger
+
+            if (_isIas) {
+                context.originalIas = _iasOriginalTag;
+                context.iasWrapped = _iasTag;
+            }
+
             context.has_ads = true;
             context.impression_trackers = [];
             context.study_trackers = [];
@@ -301,11 +320,29 @@ var t3 = (function($, window) {
         context.number_of_general_urls++;
     }
 
+    function _checkIasUseCase(url) {
+        var matchKey = "originalVast=";
+        var matchKeyLength = matchKey.length;
+        var iasUseCase = url.match(matchKey);
+        var tagLength = url.length;
+
+        if (iasUseCase != null) {
+            //console.log(url.substr(iasUseCase.index+matchKeyLength,tagLength));
+            _isIas = true;
+            _iasTag = url.substr(iasUseCase.index+matchKeyLength,tagLength);
+            _iasOriginalTag = url;
+        } else {
+            _isIas = false;
+        }
+
+    }
+
     return {
         setTag: setTag,
         getTag: getTag,
         start: parseTag,
-        test: _checkUrlForSecurity
+        test: _checkUrlForSecurity,
+        check: _checkIasUseCase
     };
 
 })($, window);
