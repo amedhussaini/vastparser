@@ -44,6 +44,14 @@
     </div>
       <script id="quickview" type="text/x-handlebars-template">
 
+        {{#if originalMoat}}
+          <div class="col-md-12">
+          <p>You are viewing the results of the tag behind the MOAT wrapper.</p>
+          <p style="font-size: 0.7em;">({{moatWrapped}})</p>
+          <br>
+          </div>
+        {{/if}}
+
         {{#if originalIas}}
           <div class="col-md-12">
           <p>You are viewing the results of the tag behind the IAS wrapper.</p>

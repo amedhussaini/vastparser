@@ -6,9 +6,15 @@ var t3 = (function($, window) {
     var tag = "http://vast.brandads.net/vast?line_item=13649676&subid1=novpaid&ba_cb=${rand}";
     var _type = null;
     var _creativeType = null;
+    
+    // special use cases
     var _isIas = false;
     var _iasTag = "";
     var _iasOriginalTag = "";
+    var _isMoat = false;
+    var _moatTag = "";
+    var _moatOriginalTag = "";
+
     //var tag = "https://experiences.fuiszmedia.com/5633bf0b9ede1703001a3dae/vast.xml";
     //var tag = "http://fw.adsafeprotected.com/vast/fwjsvid/st/47149/6673121/skeleton.js?originalVast=https://bs.serving-sys.com/BurstingPipe/adServer.bs?cn=is&c=23&pl=VAST&pli=15243107&PluID=0&pos=1000&ord=${rand}&cim=1";
     //var tag = "http://bs.serving-sys.com/BurstingPipe/adServer.bs?cn=is&c=23&pl=VAST&pli=13959650&PluID=0&pos=9578&ord=${rand}&cim=1&yume_xml_timeout=10000&yume_ad_timeout=10000";
@@ -29,12 +35,19 @@ var t3 = (function($, window) {
         _type = null;
         _creativeType = null;
 
+            _checkMoatUseCase(tag);
             _checkIasUseCase(tag);
+
+            if (_isMoat) {
+                tag = _moatTag;
+                console.log(tag);
+            }
 
             if (_isIas) {
                 tag = _iasTag;
                 console.log(tag);
             }
+
 
 
 
@@ -47,6 +60,11 @@ var t3 = (function($, window) {
             if (_isIas) {
                 context.originalIas = _iasOriginalTag;
                 context.iasWrapped = _iasTag;
+            }
+
+            if (_isMoat) {
+                context.originalMoat = _moatOriginalTag;
+                context.moatWrapped = _moatTag;
             }
 
             context.has_ads = true;
@@ -320,7 +338,37 @@ var t3 = (function($, window) {
         context.number_of_general_urls++;
     }
 
+
+    function _checkMoatUseCase(url) {
+        var generalMatchKey = "svastx.moatads.com";
+
+        if (url.match(generalMatchKey) == null) {
+            //doesnt match the moat pattern
+            return false;
+        }
+        var matchKey = "vast_URL=";
+        var matchKeyLength = matchKey.length;
+        var moatUseCase = url.match(matchKey);
+        var tagLength = url.length;
+
+        if (moatUseCase != null) {
+            _isMoat = true;
+            _moatTag = url.substr(moatUseCase.index+matchKeyLength, tagLength);
+            _moatOriginalTag = url;
+        } else {
+            _isMoat = false;
+        }
+
+    }
+
     function _checkIasUseCase(url) {
+
+        var generalMatchKey = "fw.adsafeprotected.com";
+
+        if (url.match(generalMatchKey) == null) {
+            //doesnt mach the moat pattern
+            return false;
+        }
         var matchKey = "originalVast=";
         var matchKeyLength = matchKey.length;
         var iasUseCase = url.match(matchKey);
