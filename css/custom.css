@@ -10,6 +10,15 @@ tr td:first-child > p {
 tr td > span.glyphicon {
 	margin-right: 4px;
 }
+
+tr td > span.media-details {
+	font-size: .75em;
+}
+
+tr td > img {
+	margin: 10px;
+}
+
 tr.major-separator td {
 	background-color: #4d94ff;
 	font-size: 1.7em;
@@ -36,4 +45,5 @@ tr.tiny-separator td {
 	font-size: 1.2em;
 	text-align: center;
 }
+
 

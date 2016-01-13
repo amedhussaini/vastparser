@@ -62,7 +62,7 @@
 
         {{#if has_ads}}
 
-        <div class="col-md-4">
+        <div class="col-md-3">
           <div class="panel panel-info">
             <div class="panel-heading">
               <h3 class="panel-title">Type of Tag</h3>
@@ -72,7 +72,7 @@
             </div>
           </div>
         </div>
-        <div class="col-md-4">
+        <div class="col-md-3">
 
           <div class="panel panel-info">
             <div class="panel-heading">
@@ -83,7 +83,7 @@
             </div>
           </div>
         </div>
-        <div class="col-md-4">
+        <div class="col-md-3">
 
           <div class="panel panel-info">
             <div class="panel-heading">
@@ -94,7 +94,21 @@
             </div>
           </div>
         </div>
+        <div class="col-md-3">
 
+          <div class="panel panel-info">
+            <div class="panel-heading">
+              <h3 class="panel-title">Mobile Ready</h3>
+            </div>
+            <div class="panel-body">
+                {{#if mobile_compatible}}
+                  <span class="glyphicon glyphicon-thumbs-up" aria-hidden="true"></span>
+                {{else}}
+                  <span class="glyphicon glyphicon-thumbs-down" aria-hidden="true"></span>
+                {{/if}}
+            </div>
+          </div>
+        </div>
         {{else}}
 
           <div class="col-md-12">
@@ -130,7 +144,7 @@
           {{#if media_files}}
           <tr class="tiny-separator"><td>Media Files</td><td></td></tr>
           {{#media_files}}
-            <tr><td>{{#if secure}}<span class="glyphicon glyphicon-ok-circle" aria-hidden="true" style="color: #33A846;"></span>{{else}} <span class="glyphicon glyphicon-remove-circle" aria-hidden="true" style="color: #DA2E42;"></span> {{/if}} {{type}}</td><td>{{url}}</td></tr>
+            <tr><td>{{#if secure}}<span class="glyphicon glyphicon-ok-circle" aria-hidden="true" style="color: #33A846;"></span>{{else}} <span class="glyphicon glyphicon-remove-circle" aria-hidden="true" style="color: #DA2E42;"></span> {{/if}} {{type}}<span class="media-details"><br>Resolution: {{width}}x{{height}}<br>Bitrate: {{bitrate}}</span></td><td>{{url}}</td></tr>
           {{/media_files}}
           {{/if}}
 
@@ -149,7 +163,7 @@
           {{#if companion_ads}}
           <tr class="tiny-separator"><td>Companion Ads</td><td></td></tr>
           {{#companion_ads}}
-            <tr><td>{{#if secure}}<span class="glyphicon glyphicon-ok-circle" aria-hidden="true" style="color: #33A846;"></span>{{else}} <span class="glyphicon glyphicon-remove-circle" aria-hidden="true" style="color: #DA2E42;"></span> {{/if}} {{type}}</td><td>{{url}}</td></tr>
+            <tr><td>{{#if secure}}<span class="glyphicon glyphicon-ok-circle" aria-hidden="true" style="color: #33A846;"></span>{{else}} <span class="glyphicon glyphicon-remove-circle" aria-hidden="true" style="color: #DA2E42;"></span> {{/if}} {{type}}</td><td>{{url}}{{#if static_resource}}<br><img src="{{url}}">{{/if}}</td></tr>
           {{/companion_ads}}
           {{/if}} 
         {{/creatives}}

@@ -82,6 +82,9 @@ var t3 = (function($, window) {
             context.number_of_trackers = 0;
             context.number_of_secure_trackers = 0;
             context.number_of_general_urls = 0;
+            context.mobile_low = null;
+            context.mobile_high = null;
+            context.mobile_compatible = null;
 
             var _ads = $(data).find('Ad');
             var _length_ads = _ads.length;
@@ -135,8 +138,32 @@ var t3 = (function($, window) {
                     var media_files = $(this).find('MediaFiles').children();
                     $(media_files).each(function(index, element) {
                         _incrementGeneralUrls($(this).text());
+
+
+
                         var is_secure = _checkUrlForSecurity($(this).text());
-                        context.creatives[_index].media_files.push({type: $(this).attr("type"), url: $(this).text(), secure: is_secure});
+                        var type = $(this).attr("type");
+                        var height = $(this).attr("height");
+                        var width = $(this).attr("width");
+                        var bitrate = $(this).attr("bitrate");
+
+
+                        if (type == "video/mp4") {
+                            switch(_checkMobileCompatability(bitrate, type)) {
+                                case "low":
+                                    context.mobile_compatible = true;
+                                    context.mobile_low = true;
+                                case "high":
+                                    context.mobile_compatible = true;
+                                    context.mobile_high = true;
+                            }
+                        }
+
+                        if (type == "application/javascript" || type == "application/x-javascript") {
+                            console.log("hello");
+                            context.mobile_compatible = true;
+                        }
+                        context.creatives[_index].media_files.push({type: $(this).attr("type"), url: $(this).text(), secure: is_secure, bitrate: bitrate, height: height, width: width});
                     });
 
                     // TrackingEvents
@@ -172,8 +199,14 @@ var t3 = (function($, window) {
 
                                 if (element.nodeName != 'TrackingEvents') {
                                     _incrementGeneralUrls($(this).text());
-                                    var is_secure = _checkUrlForSecurity($(this).text());            
-                                    context.creatives[_index].companion_ads.push({type: element.nodeName, url: $(this).text(), secure: is_secure});
+                                    var is_secure = _checkUrlForSecurity($(this).text()); 
+
+                                    var obj = {type: element.nodeName, url: $(this).text(), secure: is_secure};  
+            
+                                    if (element.nodeName == 'StaticResource') {
+                                        obj.static_resource = true;
+                                    }
+                                    context.creatives[_index].companion_ads.push(obj);
                                 }
 
                             });
@@ -229,7 +262,8 @@ var t3 = (function($, window) {
             {provider: 'Aggregate Knowledge (Neustar)', keyword: 'agkn.com'},
             {provider: 'Segment', keyword: 'segment.io'},
             {provider: 'BrandAds', keyword: 'brandads.net'},
-            {provider: 'IAS', keyword: 'adsafeprotected.com'}
+            {provider: 'IAS', keyword: 'adsafeprotected.com'},
+            {provider: 'MaxPoint Interactive', keyword: 'mps.mxptint.net'}
         ];
 
         dict.forEach(function(a) {
@@ -385,12 +419,30 @@ var t3 = (function($, window) {
 
     }
 
+    function _checkMobileCompatability(bitrate, file_type) {
+
+        if (file_type == "video/mp4") {
+
+            if (bitrate < 385 && bitrate > 99) {
+                return "low";
+            } else if (bitrate > 384) {
+                return "high";
+            } else {
+                return "none";
+            }
+
+        } else {
+            return "none";
+        }
+
+    }
+
     return {
         setTag: setTag,
         getTag: getTag,
         start: parseTag,
         test: _checkUrlForSecurity,
-        check: _checkIasUseCase
+        check: _checkMobileCompatability
     };
 
 })($, window);
