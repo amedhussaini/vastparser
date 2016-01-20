@@ -85,6 +85,7 @@ var t3 = (function($, window) {
             context.mobile_low = null;
             context.mobile_high = null;
             context.mobile_compatible = null;
+            context.duration = "";
 
             var _ads = $(data).find('Ad');
             var _length_ads = _ads.length;
@@ -133,6 +134,10 @@ var t3 = (function($, window) {
                     context.creatives[index].tracking_events = [];
                     context.creatives[index].video_clicks = [];
                     context.creatives[index].companion_ads = [];
+                    
+                    if ($(this).find('Duration').text() != '') {
+                        context.duration = $(this).find('Duration').text();
+                    }
 
                     // MediaFiles
                     var media_files = $(this).find('MediaFiles').children();
