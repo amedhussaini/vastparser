@@ -45,5 +45,14 @@ tr.tiny-separator td {
 	font-size: 1.2em;
 	text-align: center;
 }
+.quickview div {
+	font-size: 1.2em;
+	text-align: center;
+}
 
+@media (min-width: 992px) {
+	.col-md-2 {
+	    width: 20.0%;
+	}
+}
 
