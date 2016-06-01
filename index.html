@@ -7,8 +7,11 @@
     <meta name="description" content="">
     <meta name="author" content="">
     <title>Tag Transparency Tool</title>
-    <link href="css/bootstrap.min.css" rel="stylesheet">
-    <link href="css/custom.css" rel="stylesheet">
+    <link href='https://fonts.googleapis.com/css?family=Pacifico' rel='stylesheet' type='text/css'>
+    <link href="css/bootstrap.min.css" rel="stylesheet" type="text/css">
+    <link href="css/custom.css" rel="stylesheet" type="text/css">
+    <!--<link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/custom.css" rel="stylesheet">-->
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
       <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
@@ -18,119 +21,144 @@
   <body>
     <div class="container-fluid">
       <br>
+      <p style="font-family: 'Pacifico', cursive; text-align: center; color: #5EB8CE;font-size: 75px; margin-bottom: 50px;" id="title-heading">Tag Transparency Tool</p>
       <div class="col-md-6 col-md-offset-3">
         <input type="text" class="form-control" id="tag-input" placeholder="vast url">
       </div>
       <div class="col-md-3">
-          <button id="button-input" class="btn btn-default">Go</button>
+        <button id="button-input" class="btn btn-default">Go</button>
       </div>
       <br>
       <br>
       <br>
       <br>
       <div class="col-md-12">
-
-        <div class="row quickview">
-
-        </div>
+        <div class="row quickview"></div>
       </div>
       <div class="col-md-12">
-        <table class="table fixed">
+        <table class="table fixed" id="main">
         <tbody id="table-body">
         </tbody>
         </table>
       </div>
-
     </div>
-      <script id="quickview" type="text/x-handlebars-template">
+    <script id="quickview" type="text/x-handlebars-template">
 
-        {{#if originalMoat}}
-          <div class="col-md-12">
-          <p>You are viewing the results of the tag behind the MOAT wrapper.</p>
-          <p style="font-size: 0.7em;">({{moatWrapped}})</p>
-          <br>
-          </div>
-        {{/if}}
+      {{#if isVast3}}
+      <div class="col-md-12">
+        <div class="alert alert-danger" role="alert" style="text-align:left;">
+          <strong>Warning:</strong> VAST 3.0 tag detected.  We do not support this yet.
+        </div>
+      </div>
+      {{/if}}
 
-        {{#if originalIas}}
-          <div class="col-md-12">
-          <p>You are viewing the results of the tag behind the IAS wrapper.</p>
-          <p style="font-size: 0.7em;">({{iasWrapped}})</p>
-          <br>
-          </div>
-        {{/if}}
-
-        {{#if has_ads}}
-
-        <div class="col-md-2">
-          <div class="panel panel-info">
-            <div class="panel-heading">
-              <h3 class="panel-title">Type of Tag</h3>
-            </div>
-            <div class="panel-body">
-                {{type_of_feed}}
-            </div>
+      {{#if isIas}}
+        <div class="col-md-12">
+          <div class="alert alert-danger" role="alert" style="text-align:left;">
+            <strong>Warning:</strong>  Do not run this on Mobile.  We do not support IAS tags on Mobile at this time.
           </div>
         </div>
-        <div class="col-md-2">
-          <div class="panel panel-info">
-            <div class="panel-heading">
-              <h3 class="panel-title">Creative Duration</h3>
-            </div>
-            <div class="panel-body">
-                {{duration}}
-            </div>
-          </div>
-        </div>
-        <div class="col-md-2">
 
-          <div class="panel panel-info">
-            <div class="panel-heading">
-              <h3 class="panel-title">Tracker Count</h3>
-            </div>
-            <div class="panel-body">
-                {{number_of_trackers}}
-            </div>
-          </div>
-        </div>
-        <div class="col-md-2">
+      {{/if}}
 
-          <div class="panel panel-info">
-            <div class="panel-heading">
-              <h3 class="panel-title">Secure URLs</h3>
-            </div>
-            <div class="panel-body">
-                {{number_of_secure_trackers}}/{{number_of_general_urls}}
-            </div>
-          </div>
-        </div>
-        <div class="col-md-2">
-
-          <div class="panel panel-info">
-            <div class="panel-heading">
-              <h3 class="panel-title">Mobile Ready</h3>
-            </div>
-            <div class="panel-body">
-                {{#if mobile_compatible}}
-                  <span class="glyphicon glyphicon-thumbs-up" aria-hidden="true"></span>
-                {{else}}
-                  <span class="glyphicon glyphicon-thumbs-down" aria-hidden="true"></span>
-                {{/if}}
-            </div>
-          </div>
-        </div>
+      {{#if isMoat}}
+        {{#if mobile_compatible}}
         {{else}}
-
-          <div class="col-md-12">
-            <p class="lead">This feed appears to be empty.</p>
+        <div class="col-md-12">
+          <div class="alert alert-warning" role="alert" style="text-align:left;">
+            <strong>Warning:</strong> Please contact MOAT if this tag should run on Mobile.
           </div>
-
+        </div>
         {{/if}}
+      {{/if}}
+
+      {{#if isWrapped}}
+      <div class="col-md-12">
+        <div class="alert alert-warning" role="alert" style="text-align:left;">
+          <strong>Warning:</strong> There is a tag wrapped inside this one.
+        </div>
+        <textarea style="width: 100%;" rows="5" cols="100" name="reply" readonly="readonly" onmouseover="this.select();">{{wrappedOriginalTag}}</textarea>
+      </div>
+      <br>
+      {{/if}}
+
+      {{#if isVastUri}}
+      <div class="col-md-12">
+        <div class="alert alert-warning" role="alert" style="text-align:left;">
+          <strong>Warning:</strong> There is a tag wrapped inside this one.
+        </div>
+        <textarea style="width: 100%" rows="5" cols="100" name="reply" readonly="readonly" onmouseover="this.select();">{{VastAdTagURI}}</textarea>
+      </div>
+      <br>
+      {{/if}}
+
+      {{#if has_ads}}
+      <table class="table">
+        <thead>
+          <tr>
+          <th>Tag type</th><th>Version</th><th>Creative length</th><th>Tracker count</th><th>Tag security</th><th>Mobile specs</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              <ul style="text-align: left; list-style-type: none; padding-left: 5px;">
+                {{#if vpaid_js}}
+                <li>VPAID (JS)</li>
+                {{/if}}
+                {{#if vpaid_flash}}
+                <li>VPAID (Flash)</li>
+                {{/if}}
+                {{#if standard_vast}}
+                <li>VAST</li>
+                {{/if}}
+              </ul>
+            </td>
+            <td>{{version}}</td>
+            <td>
+              {{duration}}
+            </td>
+            <td>
+              {{number_of_trackers}}
+            </td>
+            <td>
+              {{#if tag_secure}}
+              Secure
+              {{/if}}
+              {{#if tag_nonsecure}}
+              Non-secure
+              {{/if}}
+              {{#if tag_mixed}}
+              <span style="color: red;">Mixed</span>
+              {{/if}}
+            </td>
+            <td>
+              {{#if mobile_compatible}}
+              Yes
+              {{else}}
+              No *
+              {{/if}}
+            </td>
+          </tr>
+        </tbody>
+      </table>
+        
+      {{#if mobile_alerts}}
+      <div class="col-md-12">
+        {{#mobile_alerts}}
+        <p>* {{message}}</p>
+        {{/mobile_alerts}}
+      </div>
+      {{/if}}
+      {{else}}
+      <div class="col-md-12">
+        <p class="lead">This tag is empty.  Please contact the client.</p>
+      </div>
+      {{/if}}
       </script>
       <script id="template" type="text/x-handlebars-template">
       {{#if has_ads}}
-
-        <tbody>
+      <tbody>
         <tr class="major-separator"><td>Top Level Information</td><td></td></tr>
         <tr>
           <td>Vast Version</td>
@@ -140,21 +168,30 @@
           <td>Number of Ads</td>
           <td id="number-of-ads">{{number_of_ads}}</td>
         </tr>
+        
         {{#if impression_trackers}}
         <tr class="major-separator"><td>Impression Trackers</td><td></td></tr>
         {{#list impression_trackers}} <tr><td>{{#if secure}}<span class="glyphicon glyphicon-ok-circle" aria-hidden="true" style="color: #33A846;"></span>{{else}} <span class="glyphicon glyphicon-remove-circle" aria-hidden="true" style="color: #DA2E42;"></span> {{/if}} {{provider}}</td><td>{{url}}</td></tr> {{/list}}
         {{/if}}
+
         {{#if study_trackers}}
         <tr class="major-separator"><td>Survey Trackers</td><td></td></tr>
         {{#list study_trackers}} <tr><td>{{#if secure}}<span class="glyphicon glyphicon-ok-circle" aria-hidden="true" style="color: #33A846;"></span>{{else}} <span class="glyphicon glyphicon-remove-circle" aria-hidden="true" style="color: #DA2E42;"></span> {{/if}} {{provider}}</td><td>{{url}}</td></tr> {{/list}}
         {{/if}}
+
         <tr class="major-separator"><td>Creatives</td><td></td></tr>
+        
         {{#creatives}}
-          <tr class="minor-separator"><td>{{type}}</td><td></td></tr>
           {{#if media_files}}
           <tr class="tiny-separator"><td>Media Files</td><td></td></tr>
           {{#media_files}}
-            <tr><td>{{#if secure}}<span class="glyphicon glyphicon-ok-circle" aria-hidden="true" style="color: #33A846;"></span>{{else}} <span class="glyphicon glyphicon-remove-circle" aria-hidden="true" style="color: #DA2E42;"></span> {{/if}} {{type}}<span class="media-details"><br>Resolution: {{width}}x{{height}}<br>Bitrate: {{bitrate}}</span></td><td>{{url}}</td></tr>
+            <tr><td>{{#if secure}}<span class="glyphicon glyphicon-ok-circle" aria-hidden="true" style="color: #33A846;"></span>{{else}} <span class="glyphicon glyphicon-remove-circle" aria-hidden="true" style="color: #DA2E42;"></span> {{/if}} {{type}}<span class="media-details"><br>Resolution: {{width}}x{{height}}<br>Bitrate: {{bitrate}}</span></td><td>{{url}}
+            {{#if playable}}
+            <br>
+            <video width="320" height="240" autoplay loop controls><source src="{{url}}" type="video/mp4"></video>
+            {{/if}}
+            </td></tr>
+
           {{/media_files}}
           {{/if}}
 
@@ -188,8 +225,19 @@
 
         {{/if}}
       </script>
-    <script src="js/handlebars.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
-    <script src="js/vast2.js"></script>
+      <script src="js/handlebars.js"></script>
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+      <script src="js/vast2.js"></script>
+      <script src="js/bootstrap.min.js"></script>
+      <script>
+
+        $(document).ready(function() {
+          $('#tag-input').focus(function(){
+            $('#title-heading').fadeOut(200);
+          });
+
+        });
+
+      </script>
   </body>
 </html>

@@ -1,35 +1,35 @@
-tr td:first-child {
+#main tr td:first-child {
 	width: 20%;
 	background-color: #e5f0ff;
 }
-tr td:first-child > p {
+#main tr td:first-child > p {
 	margin: 0;
 	line-height:1em;
 }
 
-tr td > span.glyphicon {
+#main tr td > span.glyphicon {
 	margin-right: 4px;
 }
 
-tr td > span.media-details {
+#main tr td > span.media-details {
 	font-size: .75em;
 }
 
-tr td > img {
+#main tr td > img {
 	margin: 10px;
 }
 
-tr.major-separator td {
+#main tr.major-separator td {
 	background-color: #4d94ff;
-	font-size: 1.7em;
+	font-size: 1.3em;
 	color: #fff;
 }
-tr.minor-separator td {
+#main tr.minor-separator td {
 	background-color: #80b3ff;
 	font-size: 1.2em;
 	color: #fff;
 }
-tr.tiny-separator td {
+#main tr.tiny-separator td {
 	background-color: #b3d1ff;
 	color: #fff;
 }
@@ -42,12 +42,8 @@ tr.tiny-separator td {
 }
 
 .quickview div {
-	font-size: 1.2em;
-	text-align: center;
-}
-.quickview div {
-	font-size: 1.2em;
-	text-align: center;
+	font-size: 1.0em;
+	/*text-align: center;*/
 }
 
 @media (min-width: 992px) {

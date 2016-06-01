@@ -1,23 +1,16 @@
 var t3 = (function($, window) {
-
     // private variables
 
-    var debug = false;
     var tag = "http://vast.brandads.net/vast?line_item=13649676&subid1=novpaid&ba_cb=${rand}";
     var _type = null;
     var _creativeType = null;
     
     // special use cases
-    var _isIas = false;
-    var _iasTag = "";
-    var _iasOriginalTag = "";
     var _isMoat = false;
     var _moatTag = "";
     var _moatOriginalTag = "";
+    var _moatWarn = false;
 
-    //var tag = "https://experiences.fuiszmedia.com/5633bf0b9ede1703001a3dae/vast.xml";
-    //var tag = "http://fw.adsafeprotected.com/vast/fwjsvid/st/47149/6673121/skeleton.js?originalVast=https://bs.serving-sys.com/BurstingPipe/adServer.bs?cn=is&c=23&pl=VAST&pli=15243107&PluID=0&pos=1000&ord=${rand}&cim=1";
-    //var tag = "http://bs.serving-sys.com/BurstingPipe/adServer.bs?cn=is&c=23&pl=VAST&pli=13959650&PluID=0&pos=9578&ord=${rand}&cim=1&yume_xml_timeout=10000&yume_ad_timeout=10000";
     function setTag(uri) {
         tag = uri;
     }
@@ -34,22 +27,7 @@ var t3 = (function($, window) {
 
         _type = null;
         _creativeType = null;
-
-            _checkMoatUseCase(tag);
-            _checkIasUseCase(tag);
-
-            if (_isMoat) {
-                tag = _moatTag;
-                console.log(tag);
-            }
-
-            if (_isIas) {
-                tag = _iasTag;
-                console.log(tag);
-            }
-
-
-
+        _checkMoatUseCase(tag);
 
         $.get(tag).done(function(data) {
 
@@ -57,10 +35,6 @@ var t3 = (function($, window) {
             context = {};
             //can haz cheeseburger
 
-            if (_isIas) {
-                context.originalIas = _iasOriginalTag;
-                context.iasWrapped = _iasTag;
-            }
 
             if (_isMoat) {
                 context.originalMoat = _moatOriginalTag;
@@ -74,7 +48,7 @@ var t3 = (function($, window) {
             context.mediafiles = [];
             context.tracking_events = [];
             context.video_trackers = [];
-            context.creatives_video_click = [];
+            context.creatives_video_click = [];          
 
             context.version = $(data).find('VAST').attr("version");
             context.number_of_ads = $(data).find('VAST').children().length
@@ -86,18 +60,48 @@ var t3 = (function($, window) {
             context.mobile_high = null;
             context.mobile_compatible = null;
             context.duration = "";
+            context.isIas = false;
+            context.isMoat = false;
+            context.isWrapped = false;
+            context.wrappedOriginalTag = "";
+            context.wrappedVendor = "";
+            context.isVastUri = false;
+            context.VastAdTagURI = "";
+            context.isVast3 = false;
+
+            context.vpaid_flash = false;
+            context.vpaid_js = false;
+            context.standard_vast = false;
+
+            context.tag_secure = null;
+            context.tag_nonsecure = null;
+            context.tag_mixed = null;
+            context.tag_hasmp4 = false;
+            context.mobile_alerts = [];
+
 
             var _ads = $(data).find('Ad');
             var _length_ads = _ads.length;
             var _length_ads_children = $(_ads).children().length;
 
-
+            if (_moatWarn) {
+                context.isMoat = true;
+            }
 
             var _impression_trackers = $(data).find('Impression');
             var _study_trackers = $(data).find('Survey');
             var _creatives = $(data).find('Creatives').children();
             var _trackingEvents = $(data).find('Creatives').children();
+            var _vastTagUri = $(data).find('VASTAdTagURI');
 
+            if (context.version == '3.0' || context.version == '3') {
+                context.isVast3 = true;
+            }
+
+            if (_vastTagUri.length > 0) {
+                context.isVastUri = true;
+                context.VastAdTagURI = _vastTagUri.text();
+            }
 
             // check if the feed is lacking ad elements or has an ad element with no children
             if (_length_ads == 0 || _length_ads_children == 0) {
@@ -124,7 +128,6 @@ var t3 = (function($, window) {
             // creative elements
             $(_creatives).each(function(index, element) {
 
-
                 // this is to account for vendors who place a 'VideoClicks' element as a child of 'Creatives', which is not in spec
                 if (element.nodeName == 'Creative') {
                     var _index = index;
@@ -136,13 +139,24 @@ var t3 = (function($, window) {
                     context.creatives[index].companion_ads = [];
                     
                     if ($(this).find('Duration').text() != '') {
-                        context.duration = $(this).find('Duration').text();
+                        context.duration = _convertTimeToSeconds($(this).find('Duration').text()) + "s";
                     }
 
                     // MediaFiles
                     var media_files = $(this).find('MediaFiles').children();
                     $(media_files).each(function(index, element) {
                         _incrementGeneralUrls($(this).text());
+
+                        var checkForWrapped = _checkForWrappedTag($(this).text());
+
+                        if (checkForWrapped != undefined) {
+                            context.isWrapped = true;
+                            context.wrappedVendor = checkForWrapped.vendor
+                            context.wrappedOriginalTag = checkForWrapped.url
+                            if (checkForWrapped.vendor == "AdSafe") {
+                                context.isIas = true;
+                            }
+                        }
 
 
 
@@ -151,7 +165,11 @@ var t3 = (function($, window) {
                         var height = $(this).attr("height");
                         var width = $(this).attr("width");
                         var bitrate = $(this).attr("bitrate");
+                        var player = false;
 
+                        if (type == "application/x-shockwave-flash" || type == "application/shockwave-flash") {
+                            context.vpaid_flash = true;
+                        }
 
                         if (type == "video/mp4") {
                             switch(_checkMobileCompatability(bitrate, type)) {
@@ -162,13 +180,21 @@ var t3 = (function($, window) {
                                     context.mobile_compatible = true;
                                     context.mobile_high = true;
                             }
-                        }
+                            player = true;
+                            context.vast = true;
+                            context.has_mp4 = true;
+                        } 
 
                         if (type == "application/javascript" || type == "application/x-javascript") {
-                            console.log("hello");
                             context.mobile_compatible = true;
+                            context.vpaid_js = true;
                         }
-                        context.creatives[_index].media_files.push({type: $(this).attr("type"), url: $(this).text(), secure: is_secure, bitrate: bitrate, height: height, width: width});
+
+                        if (type == "video/mp4" || type == "video/x-mp4" || type == "video/x-flv" || type == "video/flv" || type == "video/3gpp" || type == "video/webm") {
+                            context.standard_vast = true;
+                        }
+
+                        context.creatives[_index].media_files.push({type: $(this).attr("type"), url: $(this).text(), secure: is_secure, bitrate: bitrate, height: height, width: width, playable: player});
                     });
 
                     // TrackingEvents
@@ -205,7 +231,8 @@ var t3 = (function($, window) {
                                 if (element.nodeName != 'TrackingEvents') {
                                     _incrementGeneralUrls($(this).text());
                                     var is_secure = _checkUrlForSecurity($(this).text()); 
-
+                                    //console.log($(this).text());
+                                    //console.log(is_secure);
                                     var obj = {type: element.nodeName, url: $(this).text(), secure: is_secure};  
             
                                     if (element.nodeName == 'StaticResource') {
@@ -232,6 +259,36 @@ var t3 = (function($, window) {
 
             });
 
+            var security_check = _checkSecurityCount(context.number_of_secure_trackers, context.number_of_general_urls);
+    
+            switch(security_check) {
+                case 0:
+                context.tag_nonsecure = true;
+                break;
+                case -1:
+                context.tag_mixed = true;
+                break;
+                case 1:
+                context.tag_secure = true;
+                break;
+                default:
+                break;
+            }
+
+            if (context.vpaid_flash && !context.vpaid_js && !context.has_mp4) {
+                context.mobile_alerts.push({message: "This is a Flash based VPAID tag and there are no other suitable media types for Mobile included in the tag."});
+            }
+
+            if (!context.vpaid_flash && !context.vpaid_js && !context.has_mp4) {
+                context.mobile_alerts.push({message: "This tag does not contain any MP4s that meet our mobile specifications."});
+            }
+
+
+            console.log("vpaid flash: " + context.vpaid_flash);
+            console.log("vpaid js: " + context.vpaid_js);
+            console.log("lacking mp4: " + context.has_mp4);
+
+
             var source   = $("#template").html();
             var template = Handlebars.compile(source);
             var html    = template(context);
@@ -243,6 +300,32 @@ var t3 = (function($, window) {
             $(".quickview").html(html2).hide().fadeIn(200);
 
         });
+    }
+
+    /*
+    *
+    * FUNCTIONS
+    *
+    */
+
+    function _checkSecurityCount(secure_urls, total_urls) {
+
+        if (secure_urls < total_urls && secure_urls != 0) {
+            return -1;
+        }
+        if (secure_urls == total_urls) {
+            return 1;
+        }
+        if (secure_urls == 0) {
+            return 0;
+        }
+
+    }
+
+    function _convertTimeToSeconds(string) {
+        var a = string.split(":");
+        var seconds = (+a[0]) * 60 * 60 + (+a[1]) * 60 + (+a[2]);
+        return seconds;
     }
 
     function _getVendor(url) {
@@ -293,7 +376,6 @@ var t3 = (function($, window) {
 
                 var attribute = $(this).attr("type");
 
-
                 if (attribute == "application/shockwave-flash") {
                     _creativeType = "VPAID (Flash)";
                 }
@@ -306,7 +388,6 @@ var t3 = (function($, window) {
                 if (attribute == "application/x-javascript") {
                     _creativeType = "VPAID (JavaScript)";
                 }
-
 
             });
         
@@ -320,14 +401,11 @@ var t3 = (function($, window) {
 
     function _getTypeOfTag(object) {
 
-
             var media_files = object.find('MediaFiles').children();
 
             $(media_files).each(function(index, element) {
 
                 var attribute = $(this).attr("type");
-
-                //console.log(attribute);
 
                 if (attribute == "application/shockwave-flash") {
                     _type = "VPAID (Flash)";
@@ -343,8 +421,6 @@ var t3 = (function($, window) {
                 }
 
             });
-        
-
         
         if (_type == null) {
             return "VAST";
@@ -359,7 +435,7 @@ var t3 = (function($, window) {
     }
 
     function _checkUrlForSecurity(url) {
-
+        url = url.trim()
         switch(url.substr(0,5).trim()) {
             case "http:":
                 return null;
@@ -368,23 +444,70 @@ var t3 = (function($, window) {
             context.number_of_secure_trackers++;
                 return "true";      
             break;
-
         }
     }
 
     function _incrementGeneralUrls(url) {
-        //console.log(url);
         context.number_of_general_urls++;
+    }
+
+    function _checkForWrappedTag(data) {
+        data = data.trim();
+        if (data.match("adsafeprotected.com")) {
+            //originalVast=
+            var matchKey = "originalVast=";
+            var matchKeyLength = matchKey.length;
+            var useCase = data.match(matchKey);
+            var tagLength = data.length;
+            var tag;
+
+            if (useCase != null) {
+                tag = unescape(data.substr(useCase.index+matchKeyLength, tagLength)).trim();
+            }
+            return {vendor: "AdSafe", url: tag};
+        }
+
+        if (data.match("b.measuread.com")) {
+            //cs_vurl=
+            var matchKey = "cs_vurl=";
+            var matchKeyLength = matchKey.length;
+            var useCase = data.match(matchKey);
+            var tagLength = data.length;
+            var tag;
+            if (useCase != null) {
+                tag = unescape(data.substr(useCase.index+matchKeyLength, tagLength)).trim();
+            }
+            return {vendor: "comScore", url: tag};
+
+        }
+
+        if (data.match("svastx.moatads.com")) {
+            //vast=
+            var matchKey = "vast=";
+            var matchKeyLength = matchKey.length;
+            var useCase = data.match(matchKey);
+            var tagLength = data.length;
+            var tag;
+
+            if (useCase != null) {
+                tag = unescape(data.substr(useCase.index+matchKeyLength, tagLength)).trim();
+            }
+            return {vendor: "Moat", url: tag};
+        }
+
+
     }
 
 
     function _checkMoatUseCase(url) {
-        var generalMatchKey = "svastx.moatads.com";
+        url = url.trim();
+        var generalMatchKey = "moatads.com";
 
         if (url.match(generalMatchKey) == null) {
             //doesnt match the moat pattern
             return false;
         }
+        console.log("is_moat");
         var matchKey = "vast_URL=";
         var matchKeyLength = matchKey.length;
         var moatUseCase = url.match(matchKey);
@@ -395,31 +518,9 @@ var t3 = (function($, window) {
             _moatTag = url.substr(moatUseCase.index+matchKeyLength, tagLength);
             _moatOriginalTag = url;
         } else {
+            console.log("still moat but no detected wrapped tag");
+            _moatWarn = true;
             _isMoat = false;
-        }
-
-    }
-
-    function _checkIasUseCase(url) {
-
-        var generalMatchKey = "fw.adsafeprotected.com";
-
-        if (url.match(generalMatchKey) == null) {
-            //doesnt mach the moat pattern
-            return false;
-        }
-        var matchKey = "originalVast=";
-        var matchKeyLength = matchKey.length;
-        var iasUseCase = url.match(matchKey);
-        var tagLength = url.length;
-
-        if (iasUseCase != null) {
-            //console.log(url.substr(iasUseCase.index+matchKeyLength,tagLength));
-            _isIas = true;
-            _iasTag = url.substr(iasUseCase.index+matchKeyLength,tagLength);
-            _iasOriginalTag = url;
-        } else {
-            _isIas = false;
         }
 
     }
@@ -447,7 +548,8 @@ var t3 = (function($, window) {
         getTag: getTag,
         start: parseTag,
         test: _checkUrlForSecurity,
-        check: _checkMobileCompatability
+        check: _checkMobileCompatability,
+        testing: _convertTimeToSeconds
     };
 
 })($, window);
